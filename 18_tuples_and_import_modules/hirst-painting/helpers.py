@@ -2,7 +2,8 @@ import colorgram as c  # pyright: ignore[reportMissingImports]
 
 
 def get_palette(img_path: str, n_colors: int):
-    """Return: list of rgb tuples ([ (9, 123, 46), ... ])
+    """
+    Return: list of rgb tuples ([ (9, 123, 46), ... ])
 
     Dependecies: colorgram.py 1.2.0
     """
