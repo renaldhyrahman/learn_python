@@ -2,17 +2,21 @@ import time
 import turtle as t
 from collections import namedtuple
 from dataclasses import dataclass
+from datetime import datetime
 
+import helpers as h
 from food import Food
 from memory import Memory
+from prettytable import PrettyTable  # pyright: ignore[reportMissingImports]
 from scoreboard import Scoreboard
 from snake import Snake
 
 
 @dataclass
 class Highscore:
-    index: int = 0
-    data: dict = None
+    score: int = 0
+    date: float = 0
+    name: str = ""
 
 
 Offsets = namedtuple("Offsets", ["wall", "border", "score", "info"])
@@ -62,13 +66,28 @@ class Game:
         self.game_speed["current"] = self.game_speed["default"]
         self.keybind()
 
-    def post_game(self):
+    def over(self):
         self.save_highscore()
         self.snake.hide()
         self.food.ht()
         self.screen.update()
         self.scoreboard.update(True)
         self.input_restart()
+
+    def load_data(self):
+        histories = self.memory.read()
+        if not histories:
+            return histories
+        data = []
+        for history in histories:
+            data.append(
+                Highscore(
+                    score=history["score"],
+                    date=history["date"],
+                    name=history["name"],
+                )
+            )
+        return data
 
     # Input_user
     def input_restart(self):
@@ -110,7 +129,7 @@ class Game:
             self.direction_lock = True
 
     def mechanics_level(self):
-        if not self.food_counter % 3 and self.game_speed["current"] >= 0.1:
+        if not self.food_counter % 10 and self.game_speed["current"] >= 0.1:
             self.game_speed["current"] -= 0.05
             self.scoreboard.level_increase()
 
@@ -120,32 +139,27 @@ class Game:
             self.food_counter += 1
             self.scoreboard.score_increase()
             self.mechanics_level()
-            self.snake.segment_add(1)
+            self.snake.extend()
             self.food.spawn_food(self.snake.segments)
 
     def collision_wall(self):
-        xcor, ycor = self.snake.head.cor
+        xcor, ycor = h.round_cor(self.snake.head.segment.pos())
         if abs(xcor) >= self.WALL or abs(ycor) >= self.WALL:
             self.is_over = True
 
     def collision_body(self):
-        segments_cor = []
-        for i, s in enumerate(self.snake.segments):
-            if not i:
-                continue
-            segments_cor.append(s.cor)
-        segment_head = self.snake.head
-        if segment_head.cor in segments_cor:
-            self.is_over = True
+        segment_head_cor = h.round_cor(self.snake.head.segment.pos())
+        for s in self.snake.segments[1:]:
+            if segment_head_cor == h.round_cor(s.segment.pos()):
+                self.is_over: True
+                break
 
     def create_highscore(self, index: int = 0):
-        highscore = Highscore()
-        highscore.index = 0
-        highscore.data = {
-            "score": self.scoreboard.score,
-            "date": time.time(),
-            "name": self.input_highscore(),
-        }
+        highscore = Highscore(
+            score=self.scoreboard.score,
+            date=time.time(),
+            name=self.input_highscore(),
+        )
         return highscore
 
     def is_highscore(self):
@@ -160,14 +174,15 @@ class Game:
         highscore = self.is_highscore()
         if not highscore:
             return
-        histories = self.memory.read()
+        histories = self.load_data()
         if len(histories) == 5:
             histories.pop()
-        histories.append(highscore.data)
+        histories.append(highscore)
         histories_sorted = sorted(
-            histories, key=lambda x: x["score"], reverse=True
+            histories, key=lambda x: x.score, reverse=True
         )
-        self.memory.save(histories_sorted)
+        self.memory.save([obj.__dict__ for obj in histories_sorted])
+        self.print_highscore(histories_sorted)
 
     # Keybinds
     def keybind(self):
@@ -191,6 +206,26 @@ class Game:
         t_border.goto(border, -border)
         t_border.goto(-border, -border)
         t_border.goto(-border, border)
+
+    def print_highscore(self, highscore_list: list):
+        table = PrettyTable()
+        data = {
+            "#": [],
+            "Score": [],
+            "Name": [],
+            "Date": [],
+        }
+        for i, highscore in enumerate(highscore_list):
+            obj_date = datetime.fromtimestamp(highscore.date)
+            data["#"].append(i + 1)
+            data["Score"].append(highscore.score)
+            data["Name"].append(highscore.name)
+            data["Date"].append(obj_date.strftime("%d/%m/%Y %H:%M"))
+
+        for key in data:
+            table.add_column(key, data[key])
+        table.align = 1
+        print(table)
 
     # Play
     def start(self):

@@ -6,7 +6,6 @@ from game import Game
 # - Movement and control
 # - Display score
 # - Collision detection (wall, food, body)
-# TODO: Refactor and docstring
 # Extra features:
 # - Improved UX
 #   (display 'wall', better visualization of snake
@@ -17,7 +16,9 @@ from game import Game
 #   (more levels equal to more score)
 # - Restart mechanics
 # - Better food placement
-#   (food will not spawn exactly where the snake is)
+#   (food will not spawn exactly where the snake is,
+#    and food will not placed at odd angle
+#    (angle that is not align with head))
 # - Persistent high-score
 
 
@@ -38,7 +39,7 @@ def app():
         Settings(
             segment_length=20,
             segment_count=3,
-            game_speed=0.3,
+            game_speed=0.5,
             screen_size=600,
             memory_path="highscore.json",
         )
@@ -47,7 +48,7 @@ def app():
     while not game.is_over:
         game.start()
         if game.is_over:
-            game.post_game()
+            game.over()
 
 
 app()

@@ -1,6 +1,8 @@
 import random as r
 from turtle import Turtle
 
+import helpers as h
+
 
 class Food(Turtle):
     def __init__(self, settings: object):
@@ -25,8 +27,8 @@ class Food(Turtle):
 
     def validate_food_placement(self, snake_segments: list):
         segments_cor = []
-        for segment in snake_segments:
-            segments_cor.append(segment.cor)
+        for s in snake_segments:
+            segments_cor.append(h.round_cor(s.segment.pos()))
         new_food_cor = segments_cor[0]
         while new_food_cor in segments_cor:
             new_food_cor = self.get_random_cor()
