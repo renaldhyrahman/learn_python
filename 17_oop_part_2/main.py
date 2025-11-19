@@ -1,21 +1,25 @@
-from data import question_data, question_from_api
+# from data import question_data
+from data import question_from_api
 from quiz_brain import QuizBrain
 
+
 def opentb_formatter(dict_data):
-  """Return dict. Arg `json` from opentdb.com api"""
-  result = []
-  for data in dict_data['results']:
-    result += [{
-      'text': data['question'],
-      'answer': data['correct_answer']
-    }]
-  return result
+    """Return dict. Arg `json` from opentdb.com api"""
+    result = []
+    for data in dict_data["results"]:
+        result += [
+            {"text": data["question"], "answer": data["correct_answer"]}
+        ]
+    return result
+
 
 def app(data):
-  quiz = QuizBrain(data)
-  while quiz.still_has_question(): quiz.next_question()
-  print("\nYou've completed the quiz.")
-  print(f"Your final score: {quiz.score}/{quiz.question_number}")
+    quiz = QuizBrain(data)
+    while quiz.still_has_question():
+        quiz.next_question()
+    print("\nYou've completed the quiz.")
+    print(f"Your final score: {quiz.score}/{quiz.question_number}")
+
 
 # app(question_data)
 app(opentb_formatter(question_from_api))

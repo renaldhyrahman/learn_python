@@ -1,13 +1,19 @@
+import time
+from os import name as os_name
+from os import system as os_system
+
 from art import logo as ascii_logo
 from playing_cards import deck as ascii_deck
-from os import name as os_name, system as os_system
-import time
+
 
 def display_clear():
-    if os_name == 'nt': _ = os_system('cls')
-    else: _ = os_system('clear')
+    if os_name == "nt":
+        _ = os_system("cls")
+    else:
+        _ = os_system("clear")
     print(ascii_logo)
     # print("#################################################################################################")
+
 
 def card_splitlines(cards):
     ascii_cards = []
@@ -21,17 +27,22 @@ def card_splitlines(cards):
     # splitlines
     return [ascii_card.splitlines() for ascii_card in ascii_cards]
 
+
 def display_cards(cards, user):
     if user == "dealer":
         # Fetch ascii for cards
         if len(cards) > 0:
             result = card_splitlines(cards)
             # zip
-            for lines in zip(*result): print("".join(lines))
-        else: print("\n\n\n\n")
+            for lines in zip(*result):
+                print("".join(lines))
+        else:
+            print("\n\n\n\n")
+
 
 def display_hands(player):
-    if len(player["hands"]) < 1: return
+    if len(player["hands"]) < 1:
+        return
     for hand in player["hands"]:
         hand_info = rf"""
 
@@ -40,15 +51,21 @@ bet     : {hand["bet"]}
 
 """
         result = card_splitlines(hand["cards"]) + [hand_info.splitlines()]
-        for lines in zip(*result): print("".join(lines))
+        for lines in zip(*result):
+            print("".join(lines))
+
 
 def display_announcement(data_game):
     states = data_game.states
-    print(rf"""
-        {states["announcement"] if states["announcement"] else " "}""")
+    print(
+        rf"""
+        {states["announcement"] if states["announcement"] else " "}"""
+    )
+
 
 def display_shuffle(data_game):
-    ascii_shuffle = [r"""
+    ascii_shuffle = [
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -59,7 +76,8 @@ def display_shuffle(data_game):
           
       ||||||||||||||||||||||||||
       ||||||||||||||||||||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -70,7 +88,8 @@ def display_shuffle(data_game):
           
       |||||||||||      |||||||||
       |||||||||||      |||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -81,7 +100,8 @@ def display_shuffle(data_game):
           
       |||||||              |||||
       |||||||              |||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -92,7 +112,8 @@ def display_shuffle(data_game):
           
       |||                    |||
       |||                    |||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -103,7 +124,8 @@ def display_shuffle(data_game):
           
       |||||||              |||||
       |||||||              |||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -114,7 +136,8 @@ def display_shuffle(data_game):
             
       |||||||||||      |||||||||
       |||||||||||      |||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -125,7 +148,8 @@ def display_shuffle(data_game):
           
       ||||||||||||||||||||||||||
       ||||||||||||||||||||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -135,7 +159,8 @@ def display_shuffle(data_game):
             /    ':'    \
           
       ||||||||||||||||||||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -145,7 +170,8 @@ def display_shuffle(data_game):
             /    ':'    \
           
           ||||||||||||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -155,7 +181,8 @@ def display_shuffle(data_game):
             /    ':'    \
           
               ||||||||||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -165,7 +192,8 @@ def display_shuffle(data_game):
             /    ':'    \
 
                   ||
-    """, r"""
+    """,
+        r"""
                .+++++.
               | ~~~~~ |
               ) '*_*' (
@@ -173,7 +201,8 @@ def display_shuffle(data_game):
                '.._..'
              _,/\   /\,_
             /    ':'    \
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -181,7 +210,8 @@ def display_shuffle(data_game):
                '.._..'
              _,/\   /\,_
             /    ':'    \
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -189,7 +219,8 @@ def display_shuffle(data_game):
                '.._..'          ==
              _,/\   /\,_
             /    ':'    \
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -197,7 +228,8 @@ def display_shuffle(data_game):
                '.._..'          ==
              _,/\   /\,_        ==
             /    ':'    \       ==
-    """]
+    """,
+    ]
 
     for frame in ascii_shuffle:
         display_clear()
@@ -205,8 +237,10 @@ def display_shuffle(data_game):
         display_announcement(data_game)
         time.sleep(data_game.settings["delay"] / 2)
 
+
 def display_cut_card(data_game):
-    ascii_cut_card = [r"""
+    ascii_cut_card = [
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -214,7 +248,8 @@ def display_cut_card(data_game):
                '.._..'          ==      --Cut Card
              _,/\   /\,_        ==
             /    ':'    \       ==
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -222,7 +257,8 @@ def display_cut_card(data_game):
                '.._..'          ==    --  Cut Card
              _,/\   /\,_        ==
             /    ':'    \       ==
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -230,7 +266,8 @@ def display_cut_card(data_game):
                '.._..'          ==  __    Cut Card
              _,/\   /\,_        ==
             /    ':'    \       ==
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -238,7 +275,8 @@ def display_cut_card(data_game):
                '.._..'          ==__      Cut Card
              _,/\   /\,_        ==
             /    ':'    \       ==
-    """, r"""
+    """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -246,7 +284,8 @@ def display_cut_card(data_game):
                '.._..'        __==        Cut Card
              _,/\   /\,_        ==
             /    ':'    \       ==
-        """, r"""
+        """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -254,7 +293,8 @@ def display_cut_card(data_game):
                '.._..'        __==
              _,/\   /\,_        ==
             /    ':'    \       ==
-        """]
+        """,
+    ]
 
     for frame in ascii_cut_card:
         display_clear()
@@ -262,8 +302,10 @@ def display_cut_card(data_game):
         display_announcement(data_game)
         time.sleep(data_game.settings["delay"] / 2)
 
+
 def display_dealer(data_game):
-    ascii_dealer = [r"""
+    ascii_dealer = [
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -271,7 +313,8 @@ def display_dealer(data_game):
                '.._..'        __==
              _,/\   /\,_        ==
             /    ':'    \       ==
-        """, r"""
+        """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -279,7 +322,8 @@ def display_dealer(data_game):
                '.._..'        __==
              _,/\   /\,_        ==
             /    ':'    \       --
-        """, r"""
+        """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -287,7 +331,8 @@ def display_dealer(data_game):
                '.._..'        __==
              _,/\   /\,_        ==
             /    ':'    \
-        """, r"""
+        """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -295,7 +340,8 @@ def display_dealer(data_game):
                '.._..'        __==
              _,/\   /\,_        --
             /    ':'    \
-        """, r"""
+        """,
+        r"""
                .+++++.          ==
               | ~~~~~ |         ==
               ) '*_*' (         ==
@@ -303,31 +349,39 @@ def display_dealer(data_game):
                '.._..'        __==
              _,/\   /\,_
             /    ':'    \
-        """]
+        """,
+    ]
 
     print(ascii_dealer[data_game.deck_stage])
+
 
 def display_table(data_game):
     dealer = data_game.dealer
     player = data_game.player
 
     display_cards(dealer["cards"])
-    print(rf"""
+    print(
+        rf"""
       Dealer's hand   : {dealer["totals"]}
     --------------------------
       Total chips     : {player["chips"]}
-      Insurance       : {player["insurance"] if player["insurance"] else "-"}""")
+      Insurance       : {player["insurance"] if player["insurance"] else "-"}"""
+    )
     display_cards(player["cards"])
     display_hands(player)
 
-def display_info(data_game):
-    player = data_game.player
 
-    print(rf"""
+def display_info(data_game):
+    # player = data_game.player
+
+    print(
+        r"""
     
     
     
-    """)
+    """
+    )
+
 
 def display_ui(data_game):
     display_clear()
@@ -337,17 +391,25 @@ def display_ui(data_game):
     display_info(data_game)
     time.sleep(data_game.settings["delay"])
 
+
 # ######################################
 
-def display(task, data_game = None):
+
+def display(task, data_game=None):
     match task:
-        case "start": display_clear()
-        case "shuffle":display_shuffle(data_game)
-        case "cut_cards": display_cut_card(data_game)
-        case "ui": display_ui(data_game)
+        case "start":
+            display_clear()
+        case "shuffle":
+            display_shuffle(data_game)
+        case "cut_cards":
+            display_cut_card(data_game)
+        case "ui":
+            display_ui(data_game)
         case "exit":
             display_clear()
             print("Thank you for your visit.")
         case _:
-            if os_name == 'nt': _ = os_system('cls')
-            else: _ = os_system('clear')
+            if os_name == "nt":
+                _ = os_system("cls")
+            else:
+                _ = os_system("clear")

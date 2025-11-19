@@ -1,15 +1,19 @@
-from view import View
-from model import Model
 from dataclasses import dataclass
 
+from model import Model
+from view import View
+
 # #######################################
+
 
 @dataclass
 class States:
     is_playing = None
     task = None
 
+
 # #######################################
+
 
 class Controller:
     def __init__(self):
@@ -24,13 +28,14 @@ class Controller:
         match task:
             case "start":
                 question = "\nPlay the game?\nType 'y' for yes or 'n' for no: "
-                accept = ['y', 'yes']
-                reject = ['n', 'no']
+                accept = ["y", "yes"]
+                reject = ["n", "no"]
             case "compare":
                 question = "\nWho has more followers?\nType 'A' or 'B': "
-                accept = ['a']
-                reject = ['b']
-            case _: question = "\nPress any key to continue\n"
+                accept = ["a"]
+                reject = ["b"]
+            case _:
+                question = "\nPress any key to continue\n"
         return self.view.display_input([question, accept, reject])
 
     def start(self):

@@ -2,10 +2,12 @@ from control import Controller
 
 # #######################################
 
+
 def higher_or_lower():
     controller = Controller()
     controller.start()
-    while controller.states.is_playing: controller.game()
+    while controller.states.is_playing:
+        controller.game()
     controller.exit()
 
 

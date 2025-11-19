@@ -1,25 +1,99 @@
 import random
-from display import display
 from json.encoder import INFINITY
 
-# ######################################
-
-debug_ace_revealed = {'index_rank': 12, 'suit': 'club', 'rank': 'A', 'value': 0, 'hidden': False}
-debug_ace_hidden = {'index_rank': 12, 'suit': 'diamond', 'rank': 'A', 'value': 0, 'hidden': True}
-debug_king_revealed = {'index_rank': 11, 'suit': 'heart', 'rank': 'K', 'value': 10, 'hidden': False}
-debug_king_hidden = {'index_rank': 11, 'suit': 'spade', 'rank': 'K', 'value': 10, 'hidden': True}
-debug_queen_revealed = {'index_rank': 10, 'suit': 'club', 'rank': 'Q', 'value': 10, 'hidden': False}
-debug_queen_hidden = {'index_rank': 10, 'suit': 'diamond', 'rank': 'Q', 'value': 10, 'hidden': True}
-debug_jack_revealed = {'index_rank': 9, 'suit': 'heart', 'rank': 'J', 'value': 10, 'hidden': False}
-debug_jack_hidden = {'index_rank': 9, 'suit': 'spade', 'rank': 'J', 'value': 10, 'hidden': True}
-
-debug_numbered_1_revealed = {'index_rank': 2, 'suit': 'heart', 'rank': '4', 'value': 4, 'hidden': False}
-debug_numbered_1_hidden = {'index_rank': 0, 'suit': 'diamond', 'rank': '2', 'value': 2, 'hidden': True}
-debug_numbered_2_revealed = {'index_rank': 4, 'suit': 'diamond', 'rank': '6', 'value': 6, 'hidden': False}
-debug_numbered_3_revealed = {'index_rank': 3, 'suit': 'diamond', 'rank': '5', 'value': 5, 'hidden': False}
-
+from display import display
 
 # ######################################
+
+debug_ace_revealed = {
+    "index_rank": 12,
+    "suit": "club",
+    "rank": "A",
+    "value": 0,
+    "hidden": False,
+}
+debug_ace_hidden = {
+    "index_rank": 12,
+    "suit": "diamond",
+    "rank": "A",
+    "value": 0,
+    "hidden": True,
+}
+debug_king_revealed = {
+    "index_rank": 11,
+    "suit": "heart",
+    "rank": "K",
+    "value": 10,
+    "hidden": False,
+}
+debug_king_hidden = {
+    "index_rank": 11,
+    "suit": "spade",
+    "rank": "K",
+    "value": 10,
+    "hidden": True,
+}
+debug_queen_revealed = {
+    "index_rank": 10,
+    "suit": "club",
+    "rank": "Q",
+    "value": 10,
+    "hidden": False,
+}
+debug_queen_hidden = {
+    "index_rank": 10,
+    "suit": "diamond",
+    "rank": "Q",
+    "value": 10,
+    "hidden": True,
+}
+debug_jack_revealed = {
+    "index_rank": 9,
+    "suit": "heart",
+    "rank": "J",
+    "value": 10,
+    "hidden": False,
+}
+debug_jack_hidden = {
+    "index_rank": 9,
+    "suit": "spade",
+    "rank": "J",
+    "value": 10,
+    "hidden": True,
+}
+
+debug_numbered_1_revealed = {
+    "index_rank": 2,
+    "suit": "heart",
+    "rank": "4",
+    "value": 4,
+    "hidden": False,
+}
+debug_numbered_1_hidden = {
+    "index_rank": 0,
+    "suit": "diamond",
+    "rank": "2",
+    "value": 2,
+    "hidden": True,
+}
+debug_numbered_2_revealed = {
+    "index_rank": 4,
+    "suit": "diamond",
+    "rank": "6",
+    "value": 6,
+    "hidden": False,
+}
+debug_numbered_3_revealed = {
+    "index_rank": 3,
+    "suit": "diamond",
+    "rank": "5",
+    "value": 5,
+    "hidden": False,
+}
+
+
+# ######################################
+
 
 def game_setting():
     return {
@@ -31,7 +105,9 @@ def game_setting():
         "blackjack_payout": 1.5,
     }
 
+
 # ######################################
+
 
 class Game:
     def __init__(self, settings):
@@ -79,11 +155,12 @@ class Game:
                 else:
                     user["totals"] += 1
 
-    def refresh_ui(self, user = None):
-        if user: self.update_totals(user)
+    def refresh_ui(self, user=None):
+        if user:
+            self.update_totals(user)
         display("ui", self)
 
-    def announcement(self, announcement = None):
+    def announcement(self, announcement=None):
         self.states["announcement"] = announcement
         self.refresh_ui()
 
@@ -106,7 +183,21 @@ class Game:
 
     def deck_create(self):
         card_suits = ["spade", "heart", "club", "diamond"]
-        card_ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+        card_ranks = [
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "J",
+            "Q",
+            "K",
+            "A",
+        ]
         card_value = [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 0]
         deck = [
             {
@@ -123,7 +214,7 @@ class Game:
         self.cut_card = int(len(self.deck) * self.settings["cut_card"])
 
     def hand_create(self):
-        player_cards = self.player["current_hand"]["cards"]
+        # player_cards = self.player["current_hand"]["cards"]
         hand_new = {
             "name": f"hand_{len(self.player["hands"]) + 2}",
             "bet": self.player["bet"],
@@ -135,7 +226,8 @@ class Game:
 
     def card_draw(self, user, hidden):
         card = self.deck.pop()
-        if not hidden: card["hidden"] = False
+        if not hidden:
+            card["hidden"] = False
         user["cards"] += [card]
         self.update_deck_level()
         self.refresh_ui(user)
@@ -151,7 +243,8 @@ class Game:
         chips = self.player["chips"]
         bet = self.player["bet"]
 
-        if card_value_dealer == 0 and chips >= (bet/2): return True
+        if card_value_dealer == 0 and chips >= (bet / 2):
+            return True
         return False
 
     def check_dealer_blackjack(self):
@@ -161,40 +254,49 @@ class Game:
             _totals = dealer["totals"]
             hidden_card["hidden"] = False
             self.update_totals(dealer)
-            if dealer["totals"] == 21 and len(dealer["cards"]) == 2: hand_blackjack = True
-            else: hand_blackjack = False
+            if dealer["totals"] == 21 and len(dealer["cards"]) == 2:
+                hand_blackjack = True
+            else:
+                hand_blackjack = False
             hidden_card["hidden"] = True
             dealer["totals"] = _totals
             return hand_blackjack
         else:
             self.update_totals(dealer)
-            if dealer["totals"] == 21 and len(dealer["cards"]) == 2: return True
+            if dealer["totals"] == 21 and len(dealer["cards"]) == 2:
+                return True
             return False
 
     def check_player_blackjack(self):
         player = self.player
-        if player["totals"] == 21 and len(player["cards"]) == 2: return True
+        if player["totals"] == 21 and len(player["cards"]) == 2:
+            return True
         return False
 
     def check_any_blackjack(self):
         player_blackjack = self.check_player_blackjack()
         dealer_blackjack = self.check_dealer_blackjack()
-        if player_blackjack and dealer_blackjack: return "tie"
-        if dealer_blackjack: return "dealer"
-        if player_blackjack: return "player"
+        if player_blackjack and dealer_blackjack:
+            return "tie"
+        if dealer_blackjack:
+            return "dealer"
+        if player_blackjack:
+            return "player"
         return None
 
     def check_split(self):
-        player =  self.player
+        player = self.player
         card_1 = player["cards"][0]
         card_2 = player["cards"][1]
         player_have_enough_chip = player["chips"] >= player["bet"]
-        if card_1["rank"] == card_2["rank"] and player_have_enough_chip: return True
+        if card_1["rank"] == card_2["rank"] and player_have_enough_chip:
+            return True
         return False
 
     def check_double(self):
         player = self.player
-        if player["chips"] >= player["bet"] and len(player["cards"]) == 2: return True
+        if player["chips"] >= player["bet"] and len(player["cards"]) == 2:
+            return True
         return False
 
     def action_insurance(self):
@@ -215,7 +317,8 @@ class Game:
             self.player["cards"] += [debug_ace_revealed]
             self.update_totals(self.player)
             self.refresh_ui()
-        else: self.card_draw(self.player, False)
+        else:
+            self.card_draw(self.player, False)
 
     def action_double(self):
         self.player["bet"] *= 2
@@ -231,7 +334,8 @@ class Game:
         self.card_reveal()
 
         # Return bet to player if tie
-        if any_blackjack == "tie": self.payout(bet)
+        if any_blackjack == "tie":
+            self.payout(bet)
         # Settle Insurance
         if any_blackjack in ["tie", "dealer"] and responds_insurance:
             self.payout(bet)
@@ -278,7 +382,7 @@ class Game:
         # self.card_draw(self.dealer, True)
         # self.card_draw(player, False)
 
-        #Debug Forced card
+        # Debug Forced card
         self.dealer["cards"] += [debug_ace_revealed]
         # self.refresh_ui(self.dealer)
         self.player["cards"] += [debug_ace_revealed]
@@ -305,7 +409,7 @@ class Game:
                 self.action_insurance()
             self.announcement("Dealer checking his card...")
             # Check if dealer blackjack
-            if any_blackjack == 'dealer':
+            if any_blackjack == "dealer":
                 self.announcement("Dealer Blackjack !")
             else:
                 self.player["insurance"] = 0
@@ -324,16 +428,20 @@ class Game:
             # responds_split = input_user("split")
             # Debug: Forced accept split
             responds_split = True
-            if responds_split: self.action_split()
-            else: break
+            if responds_split:
+                self.action_split()
+            else:
+                break
             split = self.check_split()
 
         # Complete every hands
-        hands = [{
-            "bet": bet,
-            "cards": player["cards"],
-        }] + player["hands"]
-        _hands = []
+        hands = [
+            {
+                "bet": bet,
+                "cards": player["cards"],
+            }
+        ] + player["hands"]
+        # _hands = []
         for hand in hands:
             player["bet"] = hand["bet"]
             player["cards"] = hand["cards"]
@@ -341,16 +449,21 @@ class Game:
             double = self.check_double()
             if double:
                 responds_double = input_user("double", player)
-                if responds_double: self.action_double()
+                if responds_double:
+                    self.action_double()
 
             hit = True
             while hit:
-                if self.check_player_blackjack(): break
+                if self.check_player_blackjack():
+                    break
                 if player["totals"] <= 21:
                     responds_hit = input_user("hit", player)
-                    if responds_hit: self.card_draw(player, False)
-                    else: hit = False
-                else: hit = False
+                    if responds_hit:
+                        self.card_draw(player, False)
+                    else:
+                        hit = False
+                else:
+                    hit = False
 
         # Dealer's logic
         self.card_reveal()
@@ -361,23 +474,23 @@ class Game:
 
         # Round end clean up -> update states
 
-        input('Debug start_round')
-
+        input("Debug start_round")
 
         return "Debug: Warning"
 
 
-
 # ######################################
 
-def input_validation(question, input_accept, input_reject = None):
+
+def input_validation(question, input_accept, input_reject=None):
     result = False
 
-    if type(input_accept) == list:
+    if input_accept is list:
         user_input = input(question).strip().lower()
         while user_input not in (input_accept + input_reject):
             user_input = input(question).strip().lower()
-        if user_input in input_accept: result = True
+        if user_input in input_accept:
+            result = True
 
     if type(input_accept) in [int, float]:
         flag = True
@@ -385,14 +498,17 @@ def input_validation(question, input_accept, input_reject = None):
             try:
                 user_input = input(question)
                 result = int(user_input)
-                if result < input_reject or result > input_accept: flag = True
-                else: flag = False
-            except ValueError: flag = True
+                if result < input_reject or result > input_accept:
+                    flag = True
+                else:
+                    flag = False
+            except ValueError:
+                flag = True
 
     return result
 
 
-def input_user(task, player = None):
+def input_user(task, player=None):
     question = None
     input_accept = []
     input_reject = []
@@ -413,14 +529,14 @@ def input_user(task, player = None):
             input_accept = player["chips"]
             input_reject = player["min_bet"]
         case "insurance":
-            question = rf"""
+            question = r"""
         Do you want Insurance?
         Type 'y' for yes, 'n' for no:
         """
             input_accept = ["y", "yes", "i", "insurance"]
             input_reject = ["n", "no"]
         case "split":
-            question = rf"""
+            question = r"""
         Do you want to Split?
         Type 'y' for yes, 'n' for no:
         """
@@ -432,7 +548,7 @@ def input_user(task, player = None):
         Do you want to Double?
         Type 'y' for yes/double, 'n' for no:
             """
-            input_accept = ["y","yes", "d", "double"]
+            input_accept = ["y", "yes", "d", "double"]
             input_reject = ["n", "no"]
         case "hit":
             question = rf"""
@@ -440,13 +556,15 @@ def input_user(task, player = None):
         Hit or Stand?
         Type 'y' for yes/hit, 'n' for stand:
             """
-            input_accept = ["y","yes", "h", "hit"]
+            input_accept = ["y", "yes", "h", "hit"]
             input_reject = ["n", "no", "s", "stand"]
 
     result = input_validation(question, input_accept, input_reject)
     return result
 
+
 # ######################################
+
 
 def blackjack():
     display("start")
@@ -477,6 +595,8 @@ def blackjack():
 
     display("ui", game)
     return None
+
+
 # ######################################
 
 blackjack()

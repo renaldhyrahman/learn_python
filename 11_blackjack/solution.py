@@ -1,4 +1,5 @@
 import random
+
 from art import logo
 
 
@@ -60,7 +61,9 @@ def play_game():
         if user_score == 0 or computer_score == 0 or user_score > 21:
             is_game_over = True
         else:
-            user_should_deal = input("Type 'y' to get another card, type 'n' to pass: ")
+            user_should_deal = input(
+                "Type 'y' to get another card, type 'n' to pass: "
+            )
             if user_should_deal == "y":
                 user_cards.append(deal_card())
             else:
@@ -71,18 +74,15 @@ def play_game():
         computer_score = calculate_score(computer_cards)
 
     print(f"Your final hand: {user_cards}, final score: {user_score}")
-    print(f"Computer's final hand: {computer_cards}, final score: {computer_score}")
+    print(
+        f"Computer's final hand: {computer_cards}, "
+        f"final score: {computer_score}"
+    )
     print(compare(user_score, computer_score))
 
 
-while input("Do you want to play a game of Blackjack? Type 'y' or 'n': ") == "y":
+while (
+    input("Do you want to play a game of Blackjack? Type 'y' or 'n': ") == "y"
+):
     print("\n" * 20)
     play_game()
-
-
-
-
-
-
-
-
