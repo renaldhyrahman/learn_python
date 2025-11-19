@@ -29,7 +29,6 @@ class Game:
             info=self.SEGMENT_LENGTH * 6,
         )
         self.WALL = (self.SCREEN_SIZE / 2) - self.OFFSETS.wall
-        self.game_speed = settings.game_speed
         self.boot(settings)
 
     def boot(self, settings: object):
@@ -48,6 +47,10 @@ class Game:
         self.direction_lock = False
         self.food_counter = 0
         self.keybind()
+        self.game_speed = {
+            "default": settings.game_speed,
+            "current": settings.game_speed,
+        }
 
     def reset(self):
         self.is_over = False
@@ -56,6 +59,7 @@ class Game:
         self.scoreboard.reset()
         self.snake.reset()
         self.food.spawn_food(self.snake.segments)
+        self.game_speed["current"] = self.game_speed["default"]
         self.keybind()
 
     def post_game(self):
@@ -105,10 +109,9 @@ class Game:
             segment_head.seth(new)
             self.direction_lock = True
 
-    # BUG: Restart level doesnt restart game speed
     def mechanics_level(self):
-        if not self.food_counter % 3 and self.game_speed >= 0.1:
-            self.game_speed -= 0.05
+        if not self.food_counter % 3 and self.game_speed["current"] >= 0.1:
+            self.game_speed["current"] -= 0.05
             self.scoreboard.level_increase()
 
     def collision_food(self):
@@ -189,4 +192,4 @@ class Game:
         self.collision_wall()
         self.screen.update()
         self.direction_lock = False
-        time.sleep(self.game_speed)
+        time.sleep(self.game_speed["current"])
