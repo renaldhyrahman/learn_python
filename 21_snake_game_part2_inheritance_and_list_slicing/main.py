@@ -1,37 +1,43 @@
-from dataclasses import dataclass
+from collections import namedtuple
 
 from game import Game
 
+# Main feature
+# - Movement and control
+# - Wall collision
+# - Food collision
 # TODO: Body collision
-# TODO: Generate food + random placing
-# (need body detection, not placing food on current body)
-# TODO: Increase body count after eat food
-# TODO: Display score
-# TODO: Restart Mechanics
 # TODO: Persistent personal high-score
-# TODO: Level mechanics
-# (snake move faster after eat certain amount of food)
-# TODO: Refactor
-# BUG: sometimes, snake can do u-turn when2 keys are pressed at same time
+# TODO: Refactor and docstring
+# Extra features:
+# - Improved UX
+#   (display 'wall', better visualization of snake
+#   (segmented exoskeleton) to see how long your snake is)
+# - Level mechanics
+#   (snake move faster after consuming certain amount of food)
+# - Better scoring
+#   (more levels equal to more score)
+# - Restart mechanics
+# - Better food placement
+#   (food will not spawn exactly where the snake is)
 
 
-@dataclass
-class Settings:
-    segment_length: int = 0
-    segment_count: int = 0
-    game_speed: float = 0
-    screen_size: int = 0
+Settings = namedtuple(
+    "Settings",
+    ["segment_length", "segment_count", "game_speed", "screen_size"],
+)
 
 
 def app():
     settings = Settings(
-        segment_length=20, segment_count=3, game_speed=0.2, screen_size=600
+        segment_length=20, segment_count=3, game_speed=0.3, screen_size=600
     )
     game = Game(settings)
     game.is_over = False
     while not game.is_over:
         game.start()
-    game.screen.exitonclick()
+        if game.is_over:
+            game.input_restart()
 
 
 app()
