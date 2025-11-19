@@ -10,12 +10,12 @@ class Scoreboard(Turtle):
         self.INFO_FONT = ("Courier", 36, "bold")
         self.ALIGNMENT = "center"
         self.ht()
-        self.color("white")
         self.penup()
         self.reset()
 
     def update(self, is_game_over: bool = False):
         self.clear()
+        self.color("white")
         text = f"Level: {self.level}    |    Score: {self.score}"
         self.goto(self.SCORE_COR)
         self.write(
@@ -25,6 +25,7 @@ class Scoreboard(Turtle):
             font=self.SCORE_FONT,
         )
         if is_game_over:
+            self.color("red")
             text = "GAME OVER"
             self.goto(self.INFO_COR)
             self.write(
