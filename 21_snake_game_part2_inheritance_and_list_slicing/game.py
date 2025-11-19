@@ -128,8 +128,15 @@ class Game:
         if abs(xcor) >= self.WALL or abs(ycor) >= self.WALL:
             self.is_over = True
 
-    # TODO: Body collision, wait till Angela explain it
-    # def collision_body(self):
+    def collision_body(self):
+        segments_cor = []
+        for i, s in enumerate(self.snake.segments):
+            if not i:
+                continue
+            segments_cor.append(s.cor)
+        segment_head = self.snake.head
+        if segment_head.cor in segments_cor:
+            self.is_over = True
 
     def create_highscore(self, index: int = 0):
         highscore = Highscore()
@@ -188,8 +195,9 @@ class Game:
     # Play
     def start(self):
         self.snake.move()
-        self.collision_food()
+        self.collision_body()
         self.collision_wall()
+        self.collision_food()
         self.screen.update()
         self.direction_lock = False
         time.sleep(self.game_speed["current"])

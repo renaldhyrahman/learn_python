@@ -2,12 +2,10 @@ from collections import namedtuple
 
 from game import Game
 
-# Main feature
+# Main features
 # - Movement and control
-# - Wall collision
-# - Food collision
-# TODO: Body collision
-# TODO:
+# - Display score
+# - Collision detection (wall, food, body)
 # TODO: Refactor and docstring
 # Extra features:
 # - Improved UX
