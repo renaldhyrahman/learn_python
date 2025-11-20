@@ -26,3 +26,7 @@ class Ball(Turtle):
             self.move_x *= -1
         if axis == "y":
             self.move_y *= -1
+
+    def reset(self):
+        self.bounce("x")
+        self.goto(0, 0)
