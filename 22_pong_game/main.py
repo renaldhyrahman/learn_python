@@ -3,10 +3,10 @@ from collections import namedtuple
 from game import Game
 
 # BUG: make the ball do zigzag at certain angle with the paddle,
-#      potentially `ball_collision_x` and all its chain,
+#      potentially `ball_collision_x` and all its chain
 #      is the cause, it can be triggered twice because ball did not
 #      travel far enough after being hit, the result: `ball.bounce`
-#      triggered more than one, which causing zigzag pattern.
+#      triggered more than once, which causing zigzag pattern.
 #      Bug reproduce: move 2 taps from max_y (40 in distance)
 
 

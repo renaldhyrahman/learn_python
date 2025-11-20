@@ -75,7 +75,7 @@ class Game:
                 self.cur_speed -= self.DEFAULT_SPEED / 5
             print(self.cur_speed)
 
-    def observer_score(self, paddle_r: Paddle, paddle_l: Paddle):
+    def observer_score(self):
         if self.ball.xcor() > (self.MAX_X - self.SIZE):
             self.reset_speed()
             self.scoreboard.score_increase("l")
@@ -92,11 +92,6 @@ class Game:
         self.ball.move()
         self.ball_collision_y()
         self.ball_collision_x(self.paddle_r, self.paddle_l)
-        self.observer_score(self.paddle_r, self.paddle_l)
+        self.observer_score()
         self.screen.update()
         time.sleep(self.cur_speed)
-
-        # print(self.PADDLE_OFFSET)  # 50.0
-        # print(self.PADDLE_COR_X)  # 350
-        # print(self.OFFSET_X)  # 80.0
-        # print(self.GREEN_X)  # 320.0
