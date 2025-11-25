@@ -4,7 +4,6 @@ import turtle as t
 from .config import GameData
 from .control_car import CarControl
 from .display import Display
-from .logic import Logic
 from .player import Player
 
 
@@ -26,7 +25,6 @@ class Game:
         self.data.player = Player(self.data)
         self.data.velocity_car = self.data.screen.size.UNIT
         self.car_control = CarControl(self.data)
-        self.logic = Logic(self.data)
         self.keybinds()
         self.is_on = True
 
@@ -46,9 +44,30 @@ class Game:
     def post_play(self):
         self.display.screen.exitonclick()
 
+    def level_up(self):
+        player = self.data.player
+        size_unit = self.data.screen.size.UNIT
+        if player.ycor() >= self.data.screen.MAX_Y:
+            self.data.cur_level += 1
+            self.data.velocity_car += size_unit / 2
+            player.restart()
+
+    def check_collision(self):
+        player_hit_box = self.data.player.pos()
+        is_collide = False
+        for car in self.data.cars:
+            if car.distance(player_hit_box) < 40:
+                is_collide = True
+                break
+        return is_collide
+
     def play(self):
         self.car_control.cars_mov()
-        self.logic.level_up()
+        self.level_up()
         self.display.refresh()
+        is_collide = self.check_collision()
+        if is_collide:
+            self.game_over()
+            return
         self.data.player.lock_movement = False
         time.sleep(self.data.cur_speed)
