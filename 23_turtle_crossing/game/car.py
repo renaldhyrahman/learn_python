@@ -14,9 +14,7 @@ class Car(Turtle):
 
     def spawn(self):
         self.goto(self.random_cor())
-        color = self.random_color()
-        print(color)
-        self.color(color)
+        self.color(self.random_color())
         self.st()
 
     def random_cor(self):
@@ -44,11 +42,8 @@ class Car(Turtle):
         s = 1.0
         # lightness; ensuring result between 0.5 to 0.7
         l = r.uniform(0.5, 0.7)  # noqa E741
-        print(f"h={h}, s={s}, l={l}")
         _r, _g, _b = cs.hls_to_rgb(h, l, s)
-        print(f"before int ({_r, _g, _b})")
         _r = int(_r * 255)
         _g = int(_g * 255)
         _b = int(_b * 255)
-        print(f"after int ({_r, _g, _b})")
         return (_r, _g, _b)
