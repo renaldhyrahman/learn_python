@@ -1,5 +1,9 @@
 from game.main import Game
 
+# TODO: Improve cars position logic,
+#       sometimes cars are stacked together or
+#       too close to each other
+
 
 def app():
     game = Game()

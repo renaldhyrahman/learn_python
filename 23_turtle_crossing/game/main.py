@@ -1,7 +1,7 @@
 import time
 import turtle as t
 
-from .config import Config
+from .config import GameData
 from .control_car import CarControl
 from .display import Display
 from .player import Player
@@ -9,18 +9,28 @@ from .player import Player
 
 class Game:
     def __init__(self):
-        self.config = Config()
+        self.data = GameData(
+            max_car=20, cur_level=1, score=0, cur_speed=0.1, player=None
+        )
         self.is_on = False
 
     def boot(self):
         t.colormode(255)
-        self.game_speed = self.config.SPEED
-        self.display = Display(self.config)
-        self.player = Player(self.config)
-        self.cars = []
-        self.car_control = CarControl(self.config)
-        self.display.keybinds(self.player.movement, self.game_over)
+        self.display = Display(self.data)
+        self.data.player = Player(self.data)
+        self.car_control = CarControl(self.data)
+        self.keybinds()
         self.is_on = True
+
+    def keybinds(self):
+        self.display.screen.listen()
+        screen = self.display.screen
+        player_move = self.data.player.movement
+        screen.onkeypress(key="w", fun=lambda: player_move("n"))
+        screen.onkeypress(key="a", fun=lambda: player_move("w"))
+        screen.onkeypress(key="d", fun=lambda: player_move("e"))
+        # Debug force exit
+        screen.onkey(key="o", fun=self.game_over)
 
     def game_over(self):
         self.is_on = False
@@ -31,5 +41,5 @@ class Game:
     def play(self):
         self.car_control.cars_mov()
         self.display.refresh()
-        self.player.lock_movement = False
-        time.sleep(self.game_speed)
+        self.data.player.lock_movement = False
+        time.sleep(self.data.cur_speed)
