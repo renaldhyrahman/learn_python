@@ -4,6 +4,7 @@ from turtle import Turtle
 class Player(Turtle):
     def __init__(self, config: object):
         super().__init__(shape="turtle", visible=False)
+        self.lock_movement = False
         self.config = config
         self.penup()
         self.left(90)
@@ -13,6 +14,8 @@ class Player(Turtle):
         self.st()
 
     def movement(self, direction: str):
+        if self.lock_movement:
+            return
         distance = self.config.size.UNIT
         xcor, ycor = {
             "n": (0, distance),
@@ -20,4 +23,4 @@ class Player(Turtle):
             "w": (-distance, 0),
         }[direction]
         self.goto((self.xcor() + xcor, self.ycor() + ycor))
-        print(self.pos())
+        self.lock_movement = True
