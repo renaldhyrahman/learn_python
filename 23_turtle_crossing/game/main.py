@@ -4,13 +4,19 @@ import turtle as t
 from .config import GameData
 from .control_car import CarControl
 from .display import Display
+from .logic import Logic
 from .player import Player
 
 
 class Game:
     def __init__(self):
         self.data = GameData(
-            max_car=20, cur_level=1, score=0, cur_speed=0.1, player=None
+            max_car=20,
+            velocity_car=0,
+            cur_level=1,
+            score=0,
+            cur_speed=0.1,
+            player=None,
         )
         self.is_on = False
 
@@ -18,7 +24,9 @@ class Game:
         t.colormode(255)
         self.display = Display(self.data)
         self.data.player = Player(self.data)
+        self.data.velocity_car = self.data.screen.size.UNIT
         self.car_control = CarControl(self.data)
+        self.logic = Logic(self.data)
         self.keybinds()
         self.is_on = True
 
@@ -40,6 +48,7 @@ class Game:
 
     def play(self):
         self.car_control.cars_mov()
+        self.logic.level_up()
         self.display.refresh()
         self.data.player.lock_movement = False
         time.sleep(self.data.cur_speed)

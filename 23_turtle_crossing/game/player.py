@@ -3,15 +3,11 @@ from turtle import Turtle
 
 class Player(Turtle):
     def __init__(self, data: object):
-        super().__init__(shape="turtle", visible=False)
-        self.lock_movement = False
         self.data = data
-        self.penup()
+        super().__init__(shape="turtle")
+        self.lock_movement = False
         self.left(90)
-        self.speed(0)
-        self.color("white")
-        self.goto(self.data.screen.get_cor_player_start())
-        self.st()
+        self.restart()
 
     def movement(self, direction: str):
         if self.lock_movement:
@@ -24,3 +20,11 @@ class Player(Turtle):
         }[direction]
         self.goto((self.xcor() + xcor, self.ycor() + ycor))
         self.lock_movement = True
+
+    def restart(self):
+        self.ht()
+        self.penup()
+        self.speed(0)
+        self.color("white")
+        self.goto(self.data.screen.get_cor_player_start())
+        self.st()
