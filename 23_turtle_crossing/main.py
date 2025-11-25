@@ -1,12 +1,24 @@
 from game.main import Game
 
-# TODO: Improve cars position logic,
-#       sometimes cars are stacked together or
-#       too close to each other
-# TODO: Improve UI/UX, draw road
-# TODO: Improve player movement and collision logic,
-#       better grid
+# TODO: Improve collision logic
+# TODO: Restart mechanics
+# TODO: Player win scenario. (max level)
+# TODO: Player score and persistent highscore.
+#       Create a decreasing timer, and player score is based from
+#       how quick player clear the level
+# TODO: Documentation (docstring, flowchart, and readme.md)
 # TODO: Final refactor
+
+# Extra Features:
+# - Better car movement logic,
+#   now car moving in 2 directions.
+# - Better car positioning logic,
+#   now car wont stacks or too close to each other.
+# - Improved UI/UX, visual road
+# - Better player movement, now with each move,
+#   player is guaranteed can cross 1 line of road
+#   (better grid for player movement).
+#
 
 
 def app():

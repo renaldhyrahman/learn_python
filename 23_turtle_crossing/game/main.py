@@ -10,7 +10,7 @@ from .player import Player
 class Game:
     def __init__(self):
         self.data = GameData(
-            max_car=20,
+            max_car=30,
             velocity_car=0,
             cur_level=1,
             score=0,
@@ -21,9 +21,9 @@ class Game:
 
     def boot(self):
         t.colormode(255)
+        self.data.velocity_car = self.data.screen.size.UNIT
         self.display = Display(self.data)
         self.data.player = Player(self.data)
-        self.data.velocity_car = self.data.screen.size.UNIT
         self.car_control = CarControl(self.data)
         self.keybinds()
         self.is_on = True
@@ -65,9 +65,9 @@ class Game:
         self.car_control.cars_mov()
         self.level_up()
         self.display.refresh()
-        is_collide = self.check_collision()
-        if is_collide:
-            self.game_over()
-            return
+        # is_collide = self.check_collision()
+        # if is_collide:
+        #     self.game_over()
+        #     return
         self.data.player.lock_movement = False
         time.sleep(self.data.cur_speed)

@@ -11,11 +11,17 @@ class CarControl:
             self.data.cars.append(Car(self.data))
 
     def cars_mov(self):
-        # Set padding 2 times of unit's size
-        padding = 2 * self.data.screen.size.UNIT
-        max_x = self.data.screen.MAX_X + padding
-        for i, car in enumerate(self.data.cars):
-            car.goto(car.xcor() - self.data.velocity_car, car.ycor())
-            if car.xcor() < -max_x:
-                del self.data.cars[i]
+        # Set offset 4 times of unit's size
+        offset = 4 * self.data.screen.size.UNIT
+        max_x = self.data.screen.MAX_X + offset
+        new_cars = []
+        for car in self.data.cars:
+            distance = car.direction * self.data.velocity_car
+            car.goto(car.xcor() + distance, car.ycor())
+            if (car.direction < 0 and car.xcor() < -max_x) or (
+                car.direction > 0 and car.xcor() > max_x
+            ):
                 self.populate()
+            else:
+                new_cars.append(car)
+        self.data.cars = new_cars

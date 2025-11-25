@@ -13,22 +13,19 @@ class Car(Turtle):
         self.spawn()
 
     def spawn(self):
-        self.goto(self.random_cor())
+        self.goto(self.normalize_cor())
         self.color(self.random_color())
         self.st()
 
     def random_cor(self):
-        axis_x = int(self.data.screen.MAX_X)
-        axis_y = int(self.data.screen.MAX_Y)
-        margin = self.data.screen.size.UNIT * 5
-        stop_x = (axis_x * 4) + 1
-        start_y = -axis_y + margin
-        stop_y = (axis_y - margin) + 1
-        step = self.data.screen.size.UNIT
-        return (
-            r.randrange(start=axis_x, stop=stop_x, step=step),
-            r.randrange(start=start_y, stop=stop_y + 1, step=step),
-        )
+        offset = self.data.screen.size.UNIT
+        offset_xcor = r.randint(2, 2 * self.data.max_car) * offset
+        xcor = self.data.screen.MAX_X + offset_xcor
+        ycor = r.choice(self.data.screen.get_roads_ycor())
+        self.direction = r.choice([1, -1])
+        if self.direction < 0:
+            return (xcor, ycor - offset)
+        return (-xcor, ycor + offset)
 
     def random_color(self):
         # hue
@@ -43,7 +40,18 @@ class Car(Turtle):
         _b = int(_b * 255)
         return (_r, _g, _b)
 
-    # def normalize_cor(self, cars: list):
-    #     pos_cars = []
-    #     for car in cars:
-    #         pos_cars.append(car.pos())
+    def normalize_cor(self):
+        if not self.data.cars:
+            return self.random_cor()
+        # Make sure there is enough space to squeze between cars
+        # (car length is 2 units)
+        min_distance = r.randint(3, 4) * self.data.screen.size.UNIT
+        cars = self.data.cars
+        while True:
+            new_cor = self.random_cor()
+            if all(car.distance(new_cor) >= min_distance for car in cars):
+                return new_cor
+        # for car in self.data.cars:
+        #     while car.distance(new_cor) < min_distance:
+        #         new_cor = self.random_cor()
+        # return new_cor

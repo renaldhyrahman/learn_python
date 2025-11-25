@@ -12,7 +12,7 @@ class Player(Turtle):
     def movement(self, direction: str):
         if self.lock_movement:
             return
-        distance = self.data.screen.size.UNIT
+        distance = 2 * self.data.screen.size.UNIT
         xcor, ycor = {
             "n": (0, distance),
             "e": (distance, 0),

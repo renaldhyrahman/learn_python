@@ -18,7 +18,7 @@ class ScreenConfig:
 
     def get_cor_player_start(self):
         xcor = self.CORX_CENTER
-        ycor = -self.MAX_Y + self.size.UNIT
+        ycor = -self.MAX_Y + (self.size.UNIT * 2)
         return (xcor, ycor)
 
     def get_ui_level_cor(self):
@@ -26,6 +26,17 @@ class ScreenConfig:
         xcor = -self.MAX_X + padding
         ycor = self.MAX_Y - padding
         return (xcor, ycor)
+
+    def get_single_road_width(self):
+        return 2 * self.size.UNIT
+
+    def get_roads_ycor(self):
+        single_road_width = self.get_single_road_width()
+        double_road_width = 2 * single_road_width
+        road_north = 2 * double_road_width  # double_road_width + padding
+        road_mid = self.CORY_CENTER
+        road_south = 2 * -double_road_width
+        return [road_north, road_mid, road_south]
 
 
 @dataclass
