@@ -1,6 +1,6 @@
 from game.main import Game
 
-# TODO: Restart mechanics
+# TODO: Better UX (text: Game Over)
 # TODO: Player win scenario. (max level)
 # TODO: Player score and persistent highscore.
 #       Create a decreasing timer, and player score is based from
@@ -13,11 +13,12 @@ from game.main import Game
 #   now car moving in 2 directions.
 # - Better car positioning logic,
 #   now car wont stacks or too close to each other.
-# - Improved UI/UX, visual road
+# - Improved UI/UX, visual road.
 # - Better player movement, now with each move,
-#   player is guaranteed can cross 1 line of road
+#   player is guaranteed can cross 1 line of road.
 #   (better grid for player movement).
-# - Better collision logic
+# - Better collision logic.
+# - Restart mechanics.
 
 
 def app():

@@ -1,10 +1,12 @@
+import turtle as t
+
 from .car import Car
 
 
 class CarControl:
     def __init__(self, data: object):
+        t.colormode(255)
         self.data = data
-        self.populate()
 
     def populate(self):
         while len(self.data.cars) < self.data.max_car:
@@ -25,3 +27,10 @@ class CarControl:
             else:
                 new_cars.append(car)
         self.data.cars = new_cars
+
+    def reset(self):
+        if len(self.data.cars) > 0:
+            for car in self.data.cars:
+                car.ht()
+            self.data.cars = []
+        self.populate()

@@ -13,7 +13,7 @@ class Game:
             max_car=30,
             base_velocity=0,
             cur_velocity=0,
-            cur_level=1,
+            cur_level=0,
             score=0,
             refresh_speed=0.1,
             player=None,
@@ -21,13 +21,18 @@ class Game:
         self.is_on = False
 
     def boot(self):
-        t.colormode(255)
         self.data.base_velocity = self.data.screen.size.UNIT / 2
-        self.data.cur_velocity = self.data.base_velocity
         self.display = Display(self.data)
-        self.data.player = Player(self.data)
         self.car_control = CarControl(self.data)
+        self.data.player = Player(self.data)
+        self.game_restart()
+
+    def game_restart(self):
+        self.car_control.reset()
+        self.data.player.reset()
         self.keybinds()
+        self.data.cur_level = 1
+        self.data.cur_velocity = self.data.base_velocity
         self.is_on = True
 
     def keybinds(self):
@@ -43,16 +48,19 @@ class Game:
     def game_over(self):
         self.is_on = False
         self.display.refresh()
+        is_restart = self.display.ui_input.is_restart()
+        if is_restart:
+            self.game_restart()
 
     def post_play(self):
-        self.display.screen.exitonclick()
+        t.bye()
 
     def level_up(self):
         player = self.data.player
         if player.ycor() >= self.data.screen.MAX_Y:
             self.data.cur_level += 1
             self.data.cur_velocity += self.data.base_velocity
-            player.restart()
+            player.reset()
 
     def is_player_car_collide(self):
         player = self.data.player
@@ -60,14 +68,12 @@ class Game:
         result = False
         for car in self.data.cars:
             is_player_on_road = True if player.ycor() == car.ycor() else False
-            is_car_hit_player = (
+            is_collide = (
                 True
                 if abs(car.xcor() - player.xcor()) < collision_hit_box
                 else False
             )
-            if is_player_on_road and is_car_hit_player:
-                print(f"COLLISION ! distance: {car.distance(player)}")
-                print(f"{car.xcor() - player.xcor()}")
+            if is_player_on_road and is_collide:
                 result = True
                 break
         return result

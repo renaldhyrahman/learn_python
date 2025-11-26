@@ -5,9 +5,9 @@ class Player(Turtle):
     def __init__(self, data: object):
         self.data = data
         super().__init__(shape="turtle")
-        self.lock_movement = False
         self.left(90)
-        self.restart()
+        self.lock_movement = False
+        self.reset()
 
     def movement(self, direction: str):
         if self.lock_movement:
@@ -21,7 +21,7 @@ class Player(Turtle):
         self.goto((self.xcor() + xcor, self.ycor() + ycor))
         self.lock_movement = True
 
-    def restart(self):
+    def reset(self):
         self.ht()
         self.penup()
         self.speed(0)
