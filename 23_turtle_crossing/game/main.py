@@ -10,29 +10,32 @@ from .player import Player
 class Game:
     def __init__(self):
         self.data = GameData(
-            max_car=30,
+            max_car=0,
             base_velocity=0,
             cur_velocity=0,
             cur_level=0,
-            score=0,
-            refresh_speed=0.1,
+            max_level=0,
+            refresh_speed=0,
             player=None,
         )
         self.is_on = False
 
     def boot(self):
+        self.data.max_car = 30
         self.data.base_velocity = self.data.screen.size.UNIT / 2
+        self.data.max_level = 5
+        self.data.refresh_speed = 0.1
         self.display = Display(self.data)
         self.car_control = CarControl(self.data)
         self.data.player = Player(self.data)
         self.game_restart()
 
     def game_restart(self):
+        self.data.cur_velocity = self.data.base_velocity
+        self.data.cur_level = 1
         self.car_control.reset()
         self.data.player.reset()
         self.keybinds()
-        self.data.cur_level = 1
-        self.data.cur_velocity = self.data.base_velocity
         self.is_on = True
 
     def keybinds(self):
@@ -45,12 +48,21 @@ class Game:
         # Debug force exit
         screen.onkey(key="o", fun=self.game_over)
 
+    def prompt_restart(self, is_win: bool):
+        if self.display.ui_input.is_restart(is_win):
+            self.game_restart()
+        else:
+            self.post_play()
+
     def game_over(self):
         self.is_on = False
         self.display.refresh()
-        is_restart = self.display.ui_input.is_restart()
-        if is_restart:
-            self.game_restart()
+        self.prompt_restart(is_win=False)
+
+    def game_win(self):
+        self.is_on = False
+        self.display.refresh()
+        self.prompt_restart(is_win=True)
 
     def post_play(self):
         t.bye()
@@ -58,6 +70,9 @@ class Game:
     def level_up(self):
         player = self.data.player
         if player.ycor() >= self.data.screen.MAX_Y:
+            if self.data.cur_level == 5:
+                self.game_win()
+                return
             self.data.cur_level += 1
             self.data.cur_velocity += self.data.base_velocity
             player.reset()

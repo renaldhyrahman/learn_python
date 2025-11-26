@@ -44,9 +44,9 @@ class GameData:
     max_car: int
     base_velocity: int
     cur_velocity: int
-    refresh_speed: float
     cur_level: int
-    score: int
+    max_level: int
+    refresh_speed: float
     player: object
     cars: list = field(default_factory=list)
     screen: ScreenConfig = field(default_factory=ScreenConfig)
