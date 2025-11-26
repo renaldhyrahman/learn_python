@@ -1,4 +1,4 @@
-from game.main import Game
+from game.game import Game
 
 # Extra Features:
 # - Better car movement logic,

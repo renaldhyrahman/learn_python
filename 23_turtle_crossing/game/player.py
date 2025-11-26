@@ -5,7 +5,7 @@ class Player(Turtle):
     def __init__(self, data: object):
         self.data = data
         super().__init__(shape="turtle")
-        self.left(90)
+        self.seth(90)
         self.lock_movement = False
         self.reset()
 

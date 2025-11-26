@@ -42,11 +42,9 @@ class Game:
         self.display.screen.listen()
         screen = self.display.screen
         player_move = self.data.player.movement
-        screen.onkeypress(key="w", fun=lambda: player_move("n"))
-        screen.onkeypress(key="a", fun=lambda: player_move("w"))
-        screen.onkeypress(key="d", fun=lambda: player_move("e"))
-        # Debug force exit
-        screen.onkey(key="o", fun=self.game_over)
+        screen.onkeypress(key="Up", fun=lambda: player_move("n"))
+        screen.onkeypress(key="Left", fun=lambda: player_move("w"))
+        screen.onkeypress(key="Right", fun=lambda: player_move("e"))
 
     def prompt_restart(self, is_win: bool):
         if self.display.ui_input.is_restart(is_win):
