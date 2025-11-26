@@ -1,6 +1,5 @@
 from game.main import Game
 
-# TODO: Improve collision logic
 # TODO: Restart mechanics
 # TODO: Player win scenario. (max level)
 # TODO: Player score and persistent highscore.
@@ -18,7 +17,7 @@ from game.main import Game
 # - Better player movement, now with each move,
 #   player is guaranteed can cross 1 line of road
 #   (better grid for player movement).
-#
+# - Better collision logic
 
 
 def app():

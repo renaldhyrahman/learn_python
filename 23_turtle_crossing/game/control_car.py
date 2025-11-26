@@ -16,7 +16,7 @@ class CarControl:
         max_x = self.data.screen.MAX_X + offset
         new_cars = []
         for car in self.data.cars:
-            distance = car.direction * self.data.velocity_car
+            distance = car.direction * self.data.cur_velocity
             car.goto(car.xcor() + distance, car.ycor())
             if (car.direction < 0 and car.xcor() < -max_x) or (
                 car.direction > 0 and car.xcor() > max_x

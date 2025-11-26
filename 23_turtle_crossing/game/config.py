@@ -42,8 +42,9 @@ class ScreenConfig:
 @dataclass
 class GameData:
     max_car: int
-    velocity_car: int
-    cur_speed: float
+    base_velocity: int
+    cur_velocity: int
+    refresh_speed: float
     cur_level: int
     score: int
     player: object

@@ -19,10 +19,13 @@ class Car(Turtle):
 
     def random_cor(self):
         offset = self.data.screen.size.UNIT
+        # This make sure that cars placement will varies
         offset_xcor = r.randint(2, 2 * self.data.max_car) * offset
         xcor = self.data.screen.MAX_X + offset_xcor
+        # This will spawn car randomly on different multiple roads
         ycor = r.choice(self.data.screen.get_roads_ycor())
         self.direction = r.choice([1, -1])
+        # This will make car starting position varies
         if self.direction < 0:
             return (xcor, ycor - offset)
         return (-xcor, ycor + offset)
@@ -35,10 +38,7 @@ class Car(Turtle):
         # lightness; ensuring result between 0.5 to 0.7
         l = r.uniform(0.5, 0.7)  # noqa E741
         _r, _g, _b = cs.hls_to_rgb(h, l, s)
-        _r = int(_r * 255)
-        _g = int(_g * 255)
-        _b = int(_b * 255)
-        return (_r, _g, _b)
+        return (int(_r * 255), int(_g * 255), int(_b * 255))
 
     def normalize_cor(self):
         if not self.data.cars:
@@ -51,7 +51,3 @@ class Car(Turtle):
             new_cor = self.random_cor()
             if all(car.distance(new_cor) >= min_distance for car in cars):
                 return new_cor
-        # for car in self.data.cars:
-        #     while car.distance(new_cor) < min_distance:
-        #         new_cor = self.random_cor()
-        # return new_cor

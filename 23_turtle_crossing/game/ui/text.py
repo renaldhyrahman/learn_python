@@ -1,7 +1,7 @@
 from turtle import Turtle
 
 
-class UiLevel(Turtle):
+class UiText(Turtle):
     def __init__(self, data: object):
         self.data = data
         super().__init__(visible=False)
