@@ -1,0 +1,4 @@
+test, this is from txt file: my_file.txt
+New Text from main.py
+New Text from main.py
+New Text from main.py
