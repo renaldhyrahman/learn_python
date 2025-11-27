@@ -1,4 +1,4 @@
-path_csv = "introduction/weather_data.csv"
+path_csv = "1_introduction/weather_data.csv"
 
 # ############### Challenge 1
 #
@@ -148,5 +148,5 @@ df_data = pandas.DataFrame(data=dict_data)
 
 # ######## exports df to csv (write)
 
-path_export = "introduction/new_data.csv"
+path_export = "1_introduction/new_data.csv"
 df_data.to_csv(path_export)
