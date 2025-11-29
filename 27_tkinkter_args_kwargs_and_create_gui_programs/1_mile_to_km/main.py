@@ -65,6 +65,8 @@ radiobutton_2 = t.Radiobutton(
     window, text="Km to Miles", value=2, variable=radio_state, command=e_radio
 )
 
+entry.focus()
+
 # ######  Configs
 
 window.config(padx=c.PADDING_WINDOW, pady=c.PADDING_WINDOW)
