@@ -7,18 +7,18 @@ class App:
     def __init__(self):
         self.window = t.Tk()
         self.labels = {
-            "info": t.Label(),
-            "text": t.Label(),
-            "input": t.Label(),
-            "output": t.Label(),
-            "result": t.Label(),
+            "info": t.Label(self.window),
+            "text": t.Label(self.window),
+            "input": t.Label(self.window),
+            "output": t.Label(self.window),
+            "result": t.Label(self.window),
         }
-        self.entry = t.Entry()
-        self.button_calc = t.Button()
+        self.entry = t.Entry(self.window)
+        self.button_calc = t.Button(self.window)
         self.radio_state = t.IntVar()
         self.radiobuttons = {
-            "input_miles": t.Radiobutton(),
-            "input_km": t.Radiobutton(),
+            "input_miles": t.Radiobutton(self.window),
+            "input_km": t.Radiobutton(self.window),
         }
 
     def boot(self):
