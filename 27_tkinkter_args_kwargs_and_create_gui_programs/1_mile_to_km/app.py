@@ -80,11 +80,10 @@ class App:
             return
         if self.radio_state.get() == c.RADIO_MILES:
             return input_number * 1.60934
-        else:
-            return input_number / 1.60934
+        return input_number / 1.60934
 
     def e_radio(self):
-        if self.radio_state.get() == 1:
+        if self.radio_state.get() == c.RADIO_MILES:
             self.window.title(c.TITLE_WINDOW_1)
             self.labels["input"].config(text="Miles")
             self.labels["output"].config(text="Km")
