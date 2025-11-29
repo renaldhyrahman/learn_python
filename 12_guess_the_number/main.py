@@ -12,7 +12,7 @@ ASCII_LOGO = r"""
 \    \_\  \  |  /\  ___/ \___ \ \___ \    |    |   |   Y  \  ___/  /    |    \  |  /  Y Y  \ \_\ \  ___/|  | \/
  \______  /____/  \___  >____  >____  >   |____|   |___|  /\___  > \____|__  /____/|__|_|  /___  /\___  >__|
         \/            \/     \/     \/                  \/     \/          \/            \/    \/     \/
-"""
+"""  # noqa (E501)
 
 # #######################################
 
@@ -26,14 +26,14 @@ class Game:
     def input_validation(question, options):
         """args = question: string, options: list or any integer
         return = one of the options or None"""
-        if question is not str or type(options) not in [list, int]:
+        if type(question) is not str or type(options) not in [list, int]:
             return None
         result = None
-        if options is list:
+        if type(options) is list:
             while result not in options:
                 result = input(question).strip().lower()
         else:
-            while result is not int:
+            while type(result) is not int:
                 result = input(question).strip().lower()
                 try:
                     result = int(result)
@@ -68,7 +68,7 @@ class Game:
                 question = "\nType 'y' for yes or 'n' for no: "
                 accept = ["y", "yes"]
                 reject = ["n", "no"]
-        if accept is list:
+        if type(accept) is list:
             if self.input_validation(question, accept + reject) in accept:
                 return True
             else:
@@ -101,7 +101,7 @@ class Game:
                 min_number = states.range_number[0]
                 max_number = states.range_number[1]
                 print(
-                    f"\nI'm thinking of a number between {min_number} and {max_number}"
+                    f"\nI'm thinking of a number between {min_number} and {max_number}"  # noqa (E501)
                 )
             case "guess":
                 info = states.high_or_low
