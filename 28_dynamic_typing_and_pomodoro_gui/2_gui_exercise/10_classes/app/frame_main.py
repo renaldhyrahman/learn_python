@@ -5,7 +5,7 @@ from .frame_entry import Entry
 
 
 class Main(ttk.Frame):
-    def __init__(self, parent: tk):
+    def __init__(self, parent: tk.Tk):
         super().__init__(parent)
         self.create_widgets()
 

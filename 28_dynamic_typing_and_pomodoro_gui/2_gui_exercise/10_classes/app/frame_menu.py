@@ -3,7 +3,7 @@ from tkinter import ttk
 
 
 class Menu(ttk.Frame):
-    def __init__(self, parent: tk):
+    def __init__(self, parent: tk.Tk):
         super().__init__(parent)
         self.create_widgets()
 
