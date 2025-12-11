@@ -12,6 +12,7 @@ class Color(Enum):
     GREEN = "#9bdeac"
     YELLOW = "#f7f5dd"
     WHITE = "#ffffff"
+    BLACK = "#000000"
 
 
 class Font(Enum):

@@ -38,7 +38,14 @@ class View:
         mode_idle()
 
     def obs_task(self, *args):
-        self.labels["task"].config(text=self.state.task.get())
+        task = self.state.task.get()
+        transition_map = {
+            "Idle": cons.Color.BLACK.value,
+            "Work": cons.Color.GREEN.value,
+            "Short Break": cons.Color.PINK.value,
+            "Long Break": cons.Color.RED.value,
+        }
+        self.labels["task"].config(text=task, fg=transition_map[task])
 
     def obs_counter_secs(self, *args):
         self.canvas.itemconfig(self.timer_text, text=self.format_time())
