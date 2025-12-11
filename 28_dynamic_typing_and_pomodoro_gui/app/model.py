@@ -41,10 +41,12 @@ class Model:
         self.buttons = {
             "start": tk.Button(
                 text="Start",
+                highlightthickness=0,
                 command=self.commands["start"],
             ),
             "reset": tk.Button(
                 text="Reset",
+                highlightthickness=0,
                 command=self.commands["reset"],
             ),
         }
