@@ -28,4 +28,4 @@ class Timer(Enum):
     IDLE = ("Timer", 0)
     WORK = ("Work", 25)
     SHORT_BREAK = ("Short Break", 5)
-    LONG_BREAK = ("Long Break", 5)
+    LONG_BREAK = ("Long Break", 20)

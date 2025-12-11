@@ -23,24 +23,29 @@ class View:
         self.canvas = canvas
         self.labels = labels
         self.buttons = buttons
-        # attached observer
-        self.state.task.trace_add("write", self.obs_task)
-        self.state.counter_secs.trace_add("write", self.obs_counter_secs)
-        self.state.counter_loop.trace_add("write", self.obs_counter_loop)
-        # setups/configs
+        self.boot(normalize_state=mode_idle)
+
+    def boot(self, normalize_state: Callable[[], None]):
+        self.attach_observer()
+
         self.setup_window()
         self.setup_canvas()
         self.setup_labels()
         self.setup_buttons()
-        # layout
+
         self.build_layout()
-        # normalize state
-        mode_idle()
+
+        normalize_state()
+
+    def attach_observer(self):
+        self.state.task.trace_add("write", self.obs_task)
+        self.state.counter_secs.trace_add("write", self.obs_counter_secs)
+        self.state.counter_loop.trace_add("write", self.obs_counter_loop)
 
     def obs_task(self, *args):
         task = self.state.task.get()
         timer = cons.Timer
-        transition_map = {
+        task_display_map = {
             timer.IDLE.name: (
                 timer.IDLE.value,
                 cons.Color.BLACK.value,
@@ -58,8 +63,8 @@ class View:
                 cons.Color.RED.value,
             ),
         }
-        if task in transition_map:
-            (text, _), fg_color = transition_map[task]
+        if task in task_display_map:
+            (text, _), fg_color = task_display_map[task]
             self.labels["task"].config(text=text, fg=fg_color)
 
     def obs_counter_secs(self, *args):

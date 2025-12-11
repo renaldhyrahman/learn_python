@@ -48,3 +48,9 @@ class Model:
                 command=self.commands["reset"],
             ),
         }
+
+    def after(self, delay_ms: int, callback: Callable[[], None]):
+        return self.window.after(delay_ms, callback)
+
+    def after_cancel(self, after_id: str):
+        return self.window.after_cancel(after_id)

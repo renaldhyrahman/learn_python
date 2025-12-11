@@ -8,7 +8,7 @@ from app.view import View
 
 class Controller:
     def __init__(self):
-        self.stopwatch = None
+        self.countdown_id = None
         self.model = Model(
             commands={
                 "start": self.countdown_start,
@@ -59,21 +59,21 @@ class Controller:
 
     def transition(self):
         task = self.state.task.get()
-        transition_map = {
+        next_state_map = {
             cons.Timer.IDLE.name: self.mode_work,
             cons.Timer.WORK.name: self.mode_break,
             cons.Timer.SHORT_BREAK.name: self.mode_work,
             cons.Timer.LONG_BREAK.name: self.mode_idle,
         }
-        if task in transition_map:
-            transition_map[task]()
+        if task in next_state_map:
+            next_state_map[task]()
             self.countdown_start()
 
     def countdown_stop(self):
-        if self.stopwatch is None:
+        if self.countdown_id is None:
             return
-        self.model.window.after_cancel(self.stopwatch)
-        self.stopwatch = None
+        self.model.after_cancel(self.countdown_id)
+        self.countdown_id = None
         self.mode_idle()
 
     def countdown_start(self):
@@ -81,7 +81,7 @@ class Controller:
         if counter_secs.get() == 0:
             return self.transition()
         counter_secs.set(counter_secs.get() - 1)
-        self.stopwatch = self.model.window.after(
+        self.countdown_id = self.model.after(
             1000,
             self.countdown_start,
         )
