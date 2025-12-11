@@ -21,10 +21,11 @@ class Font(Enum):
     TEXT = (FONT_NAME, 12, "normal")
 
 
-# in seconds, 60 * 25 means 25 minutes
 class Timer(Enum):
-    IDLE = 0
-    LOOP = 4
-    WORK = 60 * 25
-    SHORT_BREAK = 60 * 5
-    LONG_BREAK = 60 * 20
+    # (<displayed text>, <max_counter>)
+    MAX_LOOP = ("✔", 4)
+    # (<displayed text>, <time in minutes>)
+    IDLE = ("Timer", 0)
+    WORK = ("Work", 25)
+    SHORT_BREAK = ("Short Break", 5)
+    LONG_BREAK = ("Long Break", 5)

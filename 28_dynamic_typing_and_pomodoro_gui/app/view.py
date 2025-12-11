@@ -39,13 +39,28 @@ class View:
 
     def obs_task(self, *args):
         task = self.state.task.get()
+        timer = cons.Timer
         transition_map = {
-            "Idle": cons.Color.BLACK.value,
-            "Work": cons.Color.GREEN.value,
-            "Short Break": cons.Color.PINK.value,
-            "Long Break": cons.Color.RED.value,
+            timer.IDLE.name: (
+                timer.IDLE.value,
+                cons.Color.BLACK.value,
+            ),
+            timer.WORK.name: (
+                timer.WORK.value,
+                cons.Color.GREEN.value,
+            ),
+            timer.SHORT_BREAK.name: (
+                timer.SHORT_BREAK.value,
+                cons.Color.PINK.value,
+            ),
+            timer.LONG_BREAK.name: (
+                timer.LONG_BREAK.value,
+                cons.Color.RED.value,
+            ),
         }
-        self.labels["task"].config(text=task, fg=transition_map[task])
+        if task in transition_map:
+            (text, _), fg_color = transition_map[task]
+            self.labels["task"].config(text=text, fg=fg_color)
 
     def obs_counter_secs(self, *args):
         self.canvas.itemconfig(self.timer_text, text=self.format_time())
@@ -54,8 +69,9 @@ class View:
         cur_loop = self.state.counter_loop.get()
         if cur_loop == 0:
             return self.labels["loop"].config(text="")
-        text_loop = " ".join(["✔" for _ in range(cur_loop)])
-        self.labels["loop"].config(text=text_loop)
+        raw_text = cons.Timer.MAX_LOOP.value[0]
+        text = " ".join([raw_text for _ in range(cur_loop)])
+        self.labels["loop"].config(text=text)
 
     def format_time(self):
         counter_secs = self.state.counter_secs.get()
@@ -82,7 +98,6 @@ class View:
             xcor,
             # offset text 25px to the bottom
             ycor + 25,
-            text="xx:xx",
             fill=cons.Color.WHITE.value,
             font=cons.Font.TIMER.value,
         )
@@ -101,11 +116,13 @@ class View:
 
     def setup_buttons(self):
         self.buttons["start"].config(
+            text="Start",
             padx=10,
             bg=cons.Color.WHITE.value,
             font=cons.Font.TEXT.value,
         )
         self.buttons["reset"].config(
+            text="Reset",
             padx=10,
             bg=cons.Color.WHITE.value,
             font=cons.Font.TEXT.value,

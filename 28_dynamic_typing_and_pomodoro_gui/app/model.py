@@ -33,19 +33,17 @@ class Model:
 
     def create_labels(self):
         self.labels = {
-            "task": tk.Label(text="Timer"),
-            "loop": tk.Label(text="✔"),
+            "task": tk.Label(),
+            "loop": tk.Label(),
         }
 
     def create_buttons(self):
         self.buttons = {
             "start": tk.Button(
-                text="Start",
                 highlightthickness=0,
                 command=self.commands["start"],
             ),
             "reset": tk.Button(
-                text="Reset",
                 highlightthickness=0,
                 command=self.commands["reset"],
             ),
