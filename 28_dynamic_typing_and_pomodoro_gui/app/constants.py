@@ -2,7 +2,7 @@ from enum import Enum
 
 TITLE = "Pomodoro"
 PATH_IMG = "assets/tomato.png"
-SIZE_SCREEN = 350
+SIZE_SCREEN = 400
 FONT_NAME = "Courier"
 
 
@@ -25,7 +25,9 @@ multiplier = 5
 
 
 # Time is in seconds, 60 * 25 means 25 minutes
-class Time(Enum):
+class Timer(Enum):
+    IDLE = 0
+    LOOP = 4
     WORK = multiplier * 25
     SHORT_BREAK = multiplier * 5
     LONG_BREAK = multiplier * 20
