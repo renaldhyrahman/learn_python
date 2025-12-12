@@ -1,7 +1,16 @@
+import csv
 import tkinter as tk
+from dataclasses import dataclass
 
 import app.constants as cons
 from PIL import Image, ImageTk
+
+
+@dataclass
+class State:
+    website: tk.StringVar
+    email: tk.StringVar
+    password: tk.StringVar
 
 
 class App:
@@ -10,6 +19,11 @@ class App:
 
     def boot(self):
         self.setup_root()
+        self.state = State(
+            website=tk.StringVar(),
+            email=tk.StringVar(),
+            password=tk.StringVar(),
+        )
         self.load_assets()
         self.setup_widgets()
 
@@ -49,35 +63,38 @@ class App:
     def setup_label(self):
         self.label_website = tk.Label(
             self.root,
-            text="Website:",
+            text="Website",
             font=cons.FONT_TEXT,
         )
-        self.label_username = tk.Label(
+        self.label_email = tk.Label(
             self.root,
-            text="Email/Username:",
+            text="Email/Username",
             font=cons.FONT_TEXT,
         )
         self.label_password = tk.Label(
             self.root,
-            text="Password:",
+            text="Password",
             font=cons.FONT_TEXT,
         )
 
     def setup_entry(self):
         self.entry_webstite = tk.Entry(
             self.root,
-            width=35,
+            width=cons.Size.WIDTH_MD.value,
             font=cons.FONT_TEXT,
+            textvariable=self.state.website,
         )
-        self.entry_username = tk.Entry(
+        self.entry_email = tk.Entry(
             self.root,
-            width=35,
+            width=cons.Size.WIDTH_MD.value,
             font=cons.FONT_TEXT,
+            textvariable=self.state.email,
         )
         self.entry_password = tk.Entry(
             self.root,
-            width=21,
+            width=cons.Size.WIDTH_SM.value,
             font=cons.FONT_TEXT,
+            textvariable=self.state.password,
         )
 
     def setup_buttons(self):
@@ -90,10 +107,42 @@ class App:
         self.button_add = tk.Button(
             self.root,
             text="Add",
-            width=36,
+            width=cons.Size.WIDTH_LG.value,
             font=cons.FONT_TEXT,
+            command=self.on_add,
             highlightthickness=0,
         )
+
+    def reset_entry(self):
+        self.state.website.set("")
+        self.state.email.set("")
+        self.state.password.set("")
+
+    def on_add(self):
+        data = {
+            "website": self.state.website.get(),
+            "email": self.state.email.get(),
+            "password": self.state.password.get(),
+        }
+        self.validate_save_file(data)
+
+    def validate_save_file(self, data: dict[str, str]):
+        fieldnames = ["website", "email", "password"]
+        try:
+            with open(cons.PATH_SAVEFILE, "r+", newline="") as f:
+                reader = csv.reader(f)
+                heading = next(reader)
+                if heading != fieldnames:
+                    raise ValueError
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writerow(data)
+        except (FileNotFoundError, StopIteration, ValueError):
+            with open(cons.PATH_SAVEFILE, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerow(data)
+        finally:
+            self.reset_entry()
 
     def build_layout(self):
         self.canvas.grid(column=0, row=0, columnspan=3)
@@ -106,11 +155,11 @@ class App:
             sticky=tk.W,
         )
 
-        self.label_username.grid(
+        self.label_email.grid(
             column=0,
             row=2,
         )
-        self.entry_username.grid(
+        self.entry_email.grid(
             column=1,
             row=2,
             columnspan=2,
@@ -140,4 +189,8 @@ class App:
         )
 
     def run(self):
+        self.label_website.focus()
+        self.entry_webstite.insert(tk.END, "FooBar")
+        self.entry_email.insert(tk.END, "jhon@doe.com")
+        self.entry_password.insert(tk.END, "password")
         self.root.mainloop()
