@@ -118,8 +118,8 @@ class App:
         self.state.website.set("")
         self.state.password.set("")
 
-    def dialogue_warning(self, message: str):
-        msgbox.showerror(
+    def dialogue_missing_entry(self, message: str):
+        msgbox.showinfo(
             title="Missing data",
             message=message,
         )
@@ -141,7 +141,7 @@ class App:
                 message += f"{missing.capitalize()} is required."
                 if len(missing_list) > 1:
                     message += "\n"
-            self.dialogue_warning(message)
+            self.dialogue_missing_entry(message)
             return []
         return [website, email, password]
 
