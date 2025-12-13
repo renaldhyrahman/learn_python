@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from tkinter import messagebox as msgbox
 
 import app.constants as cons
+import pyperclip
 from app.helpers.password_generator import generate_password as get_pwd
 from PIL import Image, ImageTk
 
@@ -148,7 +149,9 @@ class App:
         return [website, email, password]
 
     def on_generate_pwd(self):
-        self.state.password.set(get_pwd())
+        pwd = get_pwd()
+        pyperclip.copy(pwd)
+        self.state.password.set(pwd)
 
     def on_add(self):
         entries = self.validate_entry()
@@ -241,12 +244,12 @@ class App:
 
     def run(self):
         # debug
-        self.debug()
+        # self.debug()
 
         self.label_website.focus()
         self.root.mainloop()
 
-    def debug(self):
-        self.entry_website.insert(tk.END, "FooBar")
-        self.entry_email.insert(tk.END, "jhon@doe.com")
-        self.on_generate_pwd()
+    # def debug(self):
+    #     self.entry_website.insert(tk.END, "FooBar")
+    #     self.entry_email.insert(tk.END, "jhon@doe.com")
+    #     self.on_generate_pwd()
