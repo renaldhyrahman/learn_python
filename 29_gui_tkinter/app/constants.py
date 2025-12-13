@@ -3,6 +3,7 @@ from enum import Enum
 TITLE = "Password Manager"
 PATH_IMG = "assets/logo.png"
 PATH_SAVEFILE = "data.csv"
+FIELDNAMES = ("Website", "Email", "Password")
 
 FONT_TEXT = ("Roboto", 12, "normal")
 

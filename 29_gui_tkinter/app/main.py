@@ -1,6 +1,7 @@
 import csv
 import tkinter as tk
 from dataclasses import dataclass
+from tkinter import messagebox as msgbox
 
 import app.constants as cons
 from PIL import Image, ImageTk
@@ -78,7 +79,7 @@ class App:
         )
 
     def setup_entry(self):
-        self.entry_webstite = tk.Entry(
+        self.entry_website = tk.Entry(
             self.root,
             width=cons.Size.WIDTH_MD.value,
             font=cons.FONT_TEXT,
@@ -115,40 +116,85 @@ class App:
 
     def reset_entry(self):
         self.state.website.set("")
-        self.state.email.set("")
         self.state.password.set("")
 
-    def on_add(self):
-        data = {
-            "website": self.state.website.get(),
-            "email": self.state.email.get(),
-            "password": self.state.password.get(),
-        }
-        self.validate_save_file(data)
+    def dialogue_warning(self, message: str):
+        msgbox.showerror(
+            title="Missing data",
+            message=message,
+        )
 
-    def validate_save_file(self, data: dict[str, str]):
-        fieldnames = ["website", "email", "password"]
+    def validate_entry(self):
+        missing_list = []
+        website = self.state.website.get().strip()
+        if not len(website):
+            missing_list.append("website")
+        email = self.state.email.get().strip()
+        if not len(email):
+            missing_list.append("email")
+        password = self.state.password.get().strip()
+        if not len(password):
+            missing_list.append("password")
+        if len(missing_list):
+            message = ""
+            for missing in missing_list:
+                message += f"{missing.capitalize()} is required."
+                if len(missing_list) > 1:
+                    message += "\n"
+            self.dialogue_warning(message)
+            return []
+        return [website, email, password]
+
+    def on_add(self):
+        entries = self.validate_entry()
+        if not len(entries):
+            return
+        website, email, password = entries
+        is_ok = msgbox.askokcancel(
+            title=website,
+            message="Is it ok to save?\n"
+            f"email: {email}\n"
+            f"password: {password}",
+        )
+        if not is_ok:
+            return
+        self.save_file((website, email, password))
+
+    def validate_save_file(self, data: tuple[str, str, str]):
         try:
-            with open(cons.PATH_SAVEFILE, "r+", newline="") as f:
+            with open(cons.PATH_SAVEFILE, "r", newline="") as f:
                 reader = csv.reader(f)
                 heading = next(reader)
-                if heading != fieldnames:
+                if heading != list(cons.FIELDNAMES):
                     raise ValueError
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writerow(data)
+                return True
         except (FileNotFoundError, StopIteration, ValueError):
-            with open(cons.PATH_SAVEFILE, "w", newline="") as f:
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerow(data)
-        finally:
-            self.reset_entry()
+            return False
+
+    def save_file(self, data: tuple[str, str, str]):
+        is_valid_save_file = self.validate_save_file(data)
+        if not is_valid_save_file:
+            self.create_new_file(data)
+        else:
+            self.update_save_file(data)
+        self.reset_entry()
+
+    def create_new_file(self, data: tuple[str, str, str]):
+        with open(cons.PATH_SAVEFILE, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(cons.FIELDNAMES)
+            writer.writerow(data)
+
+    def update_save_file(self, data: tuple[str, str, str]):
+        with open(cons.PATH_SAVEFILE, "a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(data)
 
     def build_layout(self):
         self.canvas.grid(column=0, row=0, columnspan=3)
 
         self.label_website.grid(column=0, row=1)
-        self.entry_webstite.grid(
+        self.entry_website.grid(
             column=1,
             row=1,
             columnspan=2,
@@ -189,8 +235,13 @@ class App:
         )
 
     def run(self):
+        # debug
+        self.debug()
+
         self.label_website.focus()
-        self.entry_webstite.insert(tk.END, "FooBar")
+        self.root.mainloop()
+
+    def debug(self):
+        self.entry_website.insert(tk.END, "FooBar")
         self.entry_email.insert(tk.END, "jhon@doe.com")
         self.entry_password.insert(tk.END, "password")
-        self.root.mainloop()
