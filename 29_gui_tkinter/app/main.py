@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from tkinter import messagebox as msgbox
 
 import app.constants as cons
+from app.helpers.password_generator import generate_password as get_pwd
 from PIL import Image, ImageTk
 
 
@@ -103,6 +104,7 @@ class App:
             self.root,
             text="Generate Password",
             font=cons.FONT_TEXT,
+            command=self.on_generate_pwd,
             highlightthickness=0,
         )
         self.button_add = tk.Button(
@@ -144,6 +146,9 @@ class App:
             self.dialogue_missing_entry(message)
             return []
         return [website, email, password]
+
+    def on_generate_pwd(self):
+        self.state.password.set(get_pwd())
 
     def on_add(self):
         entries = self.validate_entry()
@@ -244,4 +249,4 @@ class App:
     def debug(self):
         self.entry_website.insert(tk.END, "FooBar")
         self.entry_email.insert(tk.END, "jhon@doe.com")
-        self.entry_password.insert(tk.END, "password")
+        self.on_generate_pwd()
