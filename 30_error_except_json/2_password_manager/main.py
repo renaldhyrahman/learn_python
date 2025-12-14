@@ -1,4 +1,4 @@
-import csv
+import json
 import tkinter as tk
 from dataclasses import dataclass
 from tkinter import messagebox as msgbox
@@ -29,10 +29,6 @@ def on_get_pwd(state: tk.StringVar):
 
 
 def on_add(website: str, email: str, password: str):
-    # website = website_entry.get()
-    # email = email_entry.get()
-    # password = password_entry.get()
-
     if not len(website) or not len(password):
         return msgbox.showinfo(
             title="Oops",
@@ -45,11 +41,27 @@ def on_add(website: str, email: str, password: str):
         f"Password: {password}\n"
         "Is it ok to save?",
     )
+
     if not is_ok:
         return
-    with open(cons.PATH_SAVEFILE, "a") as f:
-        writer = csv.writer(f)
-        writer.writerow((website, email, password))
+
+    new_data = {
+        website: {
+            "email": email,
+            "password": password,
+        }
+    }
+
+    try:
+        with open(cons.PATH_SAVEFILE, "r") as f:
+            data = json.load(f)
+            data.update(new_data)
+    except FileNotFoundError:
+        data = new_data
+
+    with open(cons.PATH_SAVEFILE, "w") as f:
+        json.dump(data, f, indent=4)
+
     reset_entry()
 
 
@@ -79,33 +91,37 @@ logo_ycor = canvas_height / 2
 canvas.create_image(logo_xcor, logo_ycor, image=logo_imgtk)
 
 # labels
-website_text, email_text, password_text = cons.FIELDNAMES
-website_label = tk.Label(window, text=website_text)
-email_label = tk.Label(window, text=email_text)
-password_label = tk.Label(window, text=password_text)
+website_label = tk.Label(
+    window,
+    text="Website",
+    font=cons.FONT_TEXT,
+)
+email_label = tk.Label(
+    window,
+    text="Email",
+    font=cons.FONT_TEXT,
+)
+password_label = tk.Label(
+    window,
+    text="Password",
+    font=cons.FONT_TEXT,
+)
 
 # entries
-website_entry = tk.Entry(
-    width=cons.Size.WIDTH_MD.value,
-    textvariable=state.website,
-)
-email_entry = tk.Entry(
-    width=cons.Size.WIDTH_MD.value,
-    textvariable=state.email,
-)
-password_entry = tk.Entry(
-    width=cons.Size.WIDTH_SM.value,
-    textvariable=state.password,
-)
+website_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.website)
+email_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.email)
+password_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.password)
 
 # buttons
 password_button = tk.Button(
     text="Generate Password",
+    font=cons.FONT_TEXT,
     command=lambda: on_get_pwd(state.password),
 )
 add_button = tk.Button(
     text="Add",
     width=cons.Size.WIDTH_LG.value,
+    font=cons.FONT_TEXT,
     command=lambda: on_add(
         website=state.website.get(),
         email=state.email.get(),
@@ -114,14 +130,14 @@ add_button = tk.Button(
 )
 
 # layout
-canvas.grid(column=1, row=0)
+canvas.grid(column=0, row=0, columnspan=3)
 website_label.grid(column=0, row=1)
 email_label.grid(column=0, row=2)
 password_label.grid(column=0, row=3)
-website_entry.grid(column=1, row=1, columnspan=2, sticky=tk.W)
-email_entry.grid(column=1, row=2, columnspan=2, sticky=tk.W)
+website_entry.grid(column=1, row=1, columnspan=2, sticky=tk.EW)
+email_entry.grid(column=1, row=2, columnspan=2, sticky=tk.EW)
 password_entry.grid(column=1, row=3, sticky=tk.W)
-password_button.grid(column=2, row=3)
+password_button.grid(column=2, row=3, sticky=tk.E)
 add_button.grid(column=1, row=4, columnspan=2)
 
 
