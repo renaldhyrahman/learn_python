@@ -1,10 +1,14 @@
 from enum import Enum
 
-PATH_IMG_CARD_BACK = "assets/images/card_back.png"
-PATH_IMG_CARD_FRONT = "assets/images/card_front.png"
-PATH_IMG_RIGHT = "assets/images/right.png"
-PATH_IMG_WRONG = "assets/images/wrong.png"
-PATH_DATA = "assets/data/french_words.csv"
+TITLE = "Flashy"
+
+
+class Path(Enum):
+    DATA = "assets/data/french_words.csv"
+    IMG_CARD_FRONT = "assets/images/card_front.png"
+    IMG_CARD_BACK = "assets/images/card_back.png"
+    IMG_RIGHT = "assets/images/right.png"
+    IMG_WRONG = "assets/images/wrong.png"
 
 
 class Color(Enum):
@@ -14,3 +18,14 @@ class Color(Enum):
 class Font(Enum):
     LANGUAGE = ("Ariel", 40, "italic")
     WORD = ("Ariel", 60, "bold")
+
+
+class Size(Enum):
+    CANVAS = (800, 526)
+    PADDING = 50
+
+
+class Coordinate(Enum):
+    IMAGE = (400, 263)
+    LANGUAGE = (400, 150)
+    WORD = (400, 263)

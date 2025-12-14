@@ -17,46 +17,53 @@ def display_card(is_front: bool):
     canvas.itemconfig(c_img, image=image)
 
 
+def on_known():
+    print("on_known")
+
+
+def on_unknown():
+    print("on_unknown")
+
+
 # ######################    UI Setup    ######################
 
 
 # window/root
 window = tk.Tk()
-window.title("Flash Card")
-window.configure(bg=cons.Color.BG_GREEN.value, padx=50, pady=50)
+window.title(cons.TITLE)
+window.configure(
+    bg=cons.Color.BG_GREEN.value,
+    padx=cons.Size.PADDING.value,
+    pady=cons.Size.PADDING.value,
+)
+window.resizable(0, 0)
 
 # images
-img_card_front = Image.open(cons.PATH_IMG_CARD_FRONT)
-img_card_back = Image.open(cons.PATH_IMG_CARD_BACK)
-img_right = Image.open(cons.PATH_IMG_RIGHT)
-img_wrong = Image.open(cons.PATH_IMG_WRONG)
+img_card_front = Image.open(cons.Path.IMG_CARD_FRONT.value)
+img_card_back = Image.open(cons.Path.IMG_CARD_BACK.value)
+img_check = Image.open(cons.Path.IMG_RIGHT.value)
+img_cross = Image.open(cons.Path.IMG_WRONG.value)
 
 imgtk_card_front = ImageTk.PhotoImage(img_card_front)
 imgtk_card_back = ImageTk.PhotoImage(img_card_back)
-imgtk_right = ImageTk.PhotoImage(img_right)
-imgtk_wrong = ImageTk.PhotoImage(img_wrong)
-
+imgtk_check = ImageTk.PhotoImage(img_check)
+imgtk_cross = ImageTk.PhotoImage(img_cross)
 
 # canvas
-canvas_width, canvas_height = img_card_front.size
 canvas = tk.Canvas(
     window,
-    width=canvas_width,
-    height=canvas_height,
+    width=cons.Size.CANVAS.value[0],
+    height=cons.Size.CANVAS.value[1],
     bg=cons.Color.BG_GREEN.value,
     highlightthickness=0,
 )
-img_xcor = canvas_width / 2
-img_ycor = canvas_height / 2
-c_img = canvas.create_image(img_xcor, img_ycor)
+c_img = canvas.create_image(cons.Coordinate.IMAGE.value)
 c_text_language = canvas.create_text(
-    img_xcor,
-    150,
+    cons.Coordinate.LANGUAGE.value,
     font=cons.Font.LANGUAGE.value,
 )
 c_text_word = canvas.create_text(
-    img_xcor,
-    263,
+    cons.Coordinate.WORD.value,
     font=cons.Font.WORD.value,
 )
 
@@ -65,25 +72,26 @@ canvas.itemconfig(c_text_language, text="French")
 canvas.itemconfig(c_text_word, text="trouve")
 
 # buttons
-button_right = tk.Button(
+button_known = tk.Button(
     window,
-    image=imgtk_right,
+    image=imgtk_check,
     highlightthickness=0,
     border=0,
-    command=None,
+    command=on_known,
 )
-button_wrong = tk.Button(
+button_unknown = tk.Button(
     window,
-    image=imgtk_wrong,
+    image=imgtk_cross,
     highlightthickness=0,
     border=0,
-    command=None,
+    command=on_unknown,
 )
 
 # layout
 canvas.grid(column=0, row=0, columnspan=2)
-button_wrong.grid(column=0, row=1)
-button_right.grid(column=1, row=1)
+button_unknown.grid(column=0, row=1)
+button_known.grid(column=1, row=1)
+
 
 # ######################     Start     ######################
 
