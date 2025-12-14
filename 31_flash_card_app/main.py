@@ -18,15 +18,13 @@ class State:
 # ######################     Helpers    ######################
 
 
-def fetch_df():
+def fetch_data():
     try:
         df = pandas.read_csv(cons.Path.DATA.value)
     except FileNotFoundError:
         return
     else:
-        languages = df.columns.to_list()
-        words = df.to_dict(orient="records")
-        return (languages, words)
+        return df.to_dict(orient="records")
 
 
 # ######################      Logic     ######################
@@ -35,19 +33,44 @@ def fetch_df():
 def display_card(is_front: bool):
     if is_front:
         image = imgtk_card_front
+        text_color = cons.Color.BLACK.value
     else:
         image = imgtk_card_back
+        text_color = cons.Color.WHITE.value
     canvas.itemconfig(c_img, image=image)
+    canvas.itemconfig(c_text_language, fill=text_color)
+    canvas.itemconfig(c_text_word, fill=text_color)
 
 
-def display_random_word():
-    languange, words = data
+def display_next_card():
+    cancel_timer()
+    language = cons.LANGUAGES[0]
+    display_card(True)
+    random_words = r.choice(data)
+    state.language.set(language)
+    state.word.set(random_words[language])
+    global timer
+    timer = window.after(
+        cons.DELAY * 1000,
+        flip_card,
+        random_words,
+    )
 
-    random_languange = r.choice(languange)
-    random_words = r.choice(words)
 
-    state.language.set(random_languange)
-    state.word.set(random_words[random_languange])
+def flip_card(words: dict[str, str]):
+    cancel_timer()
+    language = cons.LANGUAGES[1]
+    display_card(False)
+    state.language.set(language)
+    state.word.set(words[language])
+
+
+def cancel_timer():
+    global timer
+    if timer is None:
+        return
+    window.after_cancel(timer)
+    timer = None
 
 
 # ######################    Handlers    ######################
@@ -55,12 +78,12 @@ def display_random_word():
 
 def on_known():
     print("on_known")
-    display_random_word()
+    display_next_card()
 
 
 def on_unknown():
     print("on_unknown")
-    display_random_word()
+    display_next_card()
 
 
 # ######################    Observer    ######################
@@ -78,7 +101,7 @@ def obs_state_word(*args):
 window = tk.Tk()
 window.title(cons.TITLE)
 window.configure(
-    bg=cons.Color.BG_GREEN.value,
+    bg=cons.Color.GREEN.value,
     padx=cons.Size.PADDING.value,
     pady=cons.Size.PADDING.value,
 )
@@ -90,6 +113,7 @@ state = State(
     word=tk.StringVar(),
 )
 data = None
+timer = None
 
 # attach observer/listener
 state.word.trace_add("write", obs_state_word)
@@ -110,18 +134,16 @@ canvas = tk.Canvas(
     window,
     width=cons.Size.CANVAS.value[0],
     height=cons.Size.CANVAS.value[1],
-    bg=cons.Color.BG_GREEN.value,
+    bg=cons.Color.GREEN.value,
     highlightthickness=0,
 )
 c_img = canvas.create_image(cons.Coordinate.IMAGE.value)
 c_text_language = canvas.create_text(
     cons.Coordinate.LANGUAGE.value,
-    text=state.language.get(),
     font=cons.Font.LANGUAGE.value,
 )
 c_text_word = canvas.create_text(
     cons.Coordinate.WORD.value,
-    text=state.word.get(),
     font=cons.Font.WORD.value,
 )
 
@@ -150,12 +172,11 @@ button_known.grid(column=1, row=1)
 # ######################     Start     ######################
 
 try:
-    data = fetch_df()
+    data = fetch_data()
     if data is None:
         raise FileNotFoundError
 except FileNotFoundError:
     print("Data is not found.")
 else:
-    display_random_word()
-    display_card(True)
+    display_next_card()
     window.mainloop()

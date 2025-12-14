@@ -1,6 +1,8 @@
 from enum import Enum
 
 TITLE = "Flashy"
+DELAY = 3  # in seconds
+LANGUAGES = ("French", "English")
 
 
 class Path(Enum):
@@ -12,7 +14,9 @@ class Path(Enum):
 
 
 class Color(Enum):
-    BG_GREEN = "#B1DDC6"
+    GREEN = "#B1DDC6"
+    BLACK = "#444"
+    WHITE = "#FFF"
 
 
 class Font(Enum):
