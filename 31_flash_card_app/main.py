@@ -52,7 +52,6 @@ def display_card(is_front: bool):
 
 
 def display_next_card():
-    print(f"data_length = {len(data)}")
     global timer, current_card
     cancel_timer()
     language = cons.LANGUAGES[0]

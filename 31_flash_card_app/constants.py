@@ -11,7 +11,7 @@ class Path(Enum):
     IMG_CARD_BACK = "assets/images/card_back.png"
     IMG_RIGHT = "assets/images/right.png"
     IMG_WRONG = "assets/images/wrong.png"
-    RESULT = "words_to_learn.csv"
+    RESULT = "assets/data/words_to_learn.csv"
 
 
 class Color(Enum):
