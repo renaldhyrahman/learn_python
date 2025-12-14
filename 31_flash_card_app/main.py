@@ -1,3 +1,4 @@
+import os
 import random as r
 import tkinter as tk
 from dataclasses import dataclass
@@ -20,11 +21,19 @@ class State:
 
 def fetch_data():
     try:
-        df = pandas.read_csv(cons.Path.DATA.value)
+        df = pandas.read_csv(cons.Path.RESULT.value)
     except FileNotFoundError:
-        return
-    else:
+        df = pandas.read_csv(cons.Path.DATA.value)
+    finally:
         return df.to_dict(orient="records")
+
+
+def update_csv():
+    global data
+    data_updated = [word for word in data if word != current_card]
+    df_updated = pandas.DataFrame(data_updated)
+    df_updated.to_csv(cons.Path.RESULT.value, index=False)
+    data = data_updated
 
 
 # ######################      Logic     ######################
@@ -43,26 +52,34 @@ def display_card(is_front: bool):
 
 
 def display_next_card():
+    print(f"data_length = {len(data)}")
+    global timer, current_card
     cancel_timer()
     language = cons.LANGUAGES[0]
     display_card(True)
-    random_words = r.choice(data)
+    try:
+        current_card = r.choice(data)
+    except IndexError:
+        return display_complete()
     state.language.set(language)
-    state.word.set(random_words[language])
-    global timer
-    timer = window.after(
-        cons.DELAY * 1000,
-        flip_card,
-        random_words,
-    )
+    state.word.set(current_card[language])
+    timer = window.after(cons.DELAY * 1000, flip_card)
 
 
-def flip_card(words: dict[str, str]):
+def display_complete():
+    state.language.set("Congratulation!")
+    state.word.set("You win.")
+    button_unknown.config(state=tk.DISABLED)
+    button_known.config(state=tk.DISABLED)
+    os.remove(cons.Path.RESULT.value)
+
+
+def flip_card():
     cancel_timer()
     language = cons.LANGUAGES[1]
     display_card(False)
     state.language.set(language)
-    state.word.set(words[language])
+    state.word.set(current_card[language])
 
 
 def cancel_timer():
@@ -77,12 +94,11 @@ def cancel_timer():
 
 
 def on_known():
-    print("on_known")
+    update_csv()
     display_next_card()
 
 
 def on_unknown():
-    print("on_unknown")
     display_next_card()
 
 
@@ -113,6 +129,7 @@ state = State(
     word=tk.StringVar(),
 )
 data = None
+current_card = None
 timer = None
 
 # attach observer/listener
@@ -171,12 +188,7 @@ button_known.grid(column=1, row=1)
 
 # ######################     Start     ######################
 
-try:
-    data = fetch_data()
-    if data is None:
-        raise FileNotFoundError
-except FileNotFoundError:
-    print("Data is not found.")
-else:
-    display_next_card()
-    window.mainloop()
+
+data = fetch_data()
+display_next_card()
+window.mainloop()
