@@ -15,21 +15,56 @@ from PIL import Image, ImageTk
 class State:
     website: tk.StringVar
     email: tk.StringVar
-    password: tk.StringVar
+    pwd: tk.StringVar
 
 
 # ######################     Handlers     ######################
+
+
+def reset_entry():
+    state.website.set("")
+    state.pwd.set("")
+
+
+def on_search():
+    website = state.website.get()
+    try:
+        data = read_savefile()
+        if data is None:
+            raise FileNotFoundError
+        result = data[website]
+    except KeyError as msg:
+        msgbox.showerror(title="Not Found", message=f"{msg} is not found.")
+    except FileNotFoundError:
+        msgbox.showerror(title="Error", message="No Data File Found.")
+    else:
+        email = result["email"]
+        pwd = result["password"]
+        pyperclip.copy(pwd)
+        state.email.set(email)
+        state.pwd.set(pwd)
+        msgbox.showinfo(
+            title=website,
+            message=f"Email: {email}\nPassword: {pwd}",
+        )
 
 
 def on_get_pwd(state: tk.StringVar):
     pwd = generate_password()
     state.set(pwd)
     pyperclip.copy(pwd)
-    return pwd
 
 
-def on_add(website: str, email: str, password: str):
-    if not len(website) or not len(password):
+def read_savefile():
+    try:
+        with open(cons.PATH_SAVEFILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+def on_add(website: str, email: str, pwd: str):
+    if not len(website) or not len(pwd):
         return msgbox.showinfo(
             title="Oops",
             message="Please make sure you haven't left any fields empty.",
@@ -38,7 +73,7 @@ def on_add(website: str, email: str, password: str):
         title=website,
         message="These are the details entered:\n"
         f"Email: {email}\n"
-        f"Password: {password}\n"
+        f"Password: {pwd}\n"
         "Is it ok to save?",
     )
 
@@ -48,14 +83,15 @@ def on_add(website: str, email: str, password: str):
     new_data = {
         website: {
             "email": email,
-            "password": password,
+            "password": pwd,
         }
     }
 
     try:
-        with open(cons.PATH_SAVEFILE, "r") as f:
-            data = json.load(f)
-            data.update(new_data)
+        data = read_savefile()
+        if data is None:
+            raise FileNotFoundError
+        data.update(new_data)
     except FileNotFoundError:
         data = new_data
 
@@ -77,7 +113,7 @@ window.config(padx=cons.Size.PADDING.value, pady=cons.Size.PADDING.value)
 state = State(
     website=tk.StringVar(),
     email=tk.StringVar(),
-    password=tk.StringVar(),
+    pwd=tk.StringVar(),
 )
 
 # canvas
@@ -101,7 +137,7 @@ email_label = tk.Label(
     text="Email",
     font=cons.FONT_TEXT,
 )
-password_label = tk.Label(
+pwd_label = tk.Label(
     window,
     text="Password",
     font=cons.FONT_TEXT,
@@ -110,13 +146,18 @@ password_label = tk.Label(
 # entries
 website_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.website)
 email_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.email)
-password_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.password)
+pwd_entry = tk.Entry(font=cons.FONT_TEXT, textvariable=state.pwd)
 
 # buttons
-password_button = tk.Button(
+search_button = tk.Button(
+    text="Search",
+    font=cons.FONT_TEXT,
+    command=on_search,
+)
+pwd_button = tk.Button(
     text="Generate Password",
     font=cons.FONT_TEXT,
-    command=lambda: on_get_pwd(state.password),
+    command=lambda: on_get_pwd(state.pwd),
 )
 add_button = tk.Button(
     text="Add",
@@ -125,7 +166,7 @@ add_button = tk.Button(
     command=lambda: on_add(
         website=state.website.get(),
         email=state.email.get(),
-        password=state.password.get(),
+        pwd=state.pwd.get(),
     ),
 )
 
@@ -133,17 +174,13 @@ add_button = tk.Button(
 canvas.grid(column=0, row=0, columnspan=3)
 website_label.grid(column=0, row=1)
 email_label.grid(column=0, row=2)
-password_label.grid(column=0, row=3)
-website_entry.grid(column=1, row=1, columnspan=2, sticky=tk.EW)
+pwd_label.grid(column=0, row=3)
+website_entry.grid(column=1, row=1, sticky=tk.EW)
+search_button.grid(column=2, row=1, sticky=tk.EW)
 email_entry.grid(column=1, row=2, columnspan=2, sticky=tk.EW)
-password_entry.grid(column=1, row=3, sticky=tk.W)
-password_button.grid(column=2, row=3, sticky=tk.E)
+pwd_entry.grid(column=1, row=3, sticky=tk.EW)
+pwd_button.grid(column=2, row=3, sticky=tk.EW)
 add_button.grid(column=1, row=4, columnspan=2)
-
-
-def reset_entry():
-    state.website.set("")
-    state.password.set("")
 
 
 state.email.set("foo@bar.com")
