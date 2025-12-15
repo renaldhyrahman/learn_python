@@ -15,6 +15,7 @@
 import datetime as dt
 import os
 import random as r
+import smtplib
 
 import constants as cons
 import pandas as pd
@@ -38,9 +39,22 @@ def get_random_letter(name: str):
 
 
 def send_mail(name: str, email: str):
-    print(f"{name} = {email}")
     letter = get_random_letter(name)
-    print(letter)
+    with smtplib.SMTP(
+        host=cons.Smtp.HOST.value,
+        port=cons.Smtp.PORT.value,
+    ) as connection:
+        connection.starttls()
+        connection.login(
+            user=cons.Smtp.USER.value,
+            password=cons.Smtp.PWD.value,
+        )
+        connection.sendmail(
+            from_addr=cons.Smtp.USER.value,
+            to_addrs=email,
+            msg=f"Subject:Happy Birthday!\n\n{letter}",
+        )
+    print(f"email sent to: {email}")
 
 
 # ######################    Run     ######################
