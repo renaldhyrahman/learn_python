@@ -8,10 +8,10 @@ load_dotenv()
 
 
 class Smtp(Enum):
-    HOST = getenv("SMTP_HOST_1")
-    PORT = getenv("SMTP_PORT_1")
-    USER = getenv("SMTP_USER_1")
-    PWD = getenv("SMTP_PWD_1")
+    HOST = getenv("SMTP_HOST")
+    PORT = getenv("SMTP_PORT")
+    USER = getenv("SMTP_USER")
+    PWD = getenv("SMTP_PWD")
 
 
 class Path(Enum):

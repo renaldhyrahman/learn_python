@@ -63,5 +63,5 @@ def send_mail(name: str, email: str):
 list_data = fetch_data()
 today = dt.date.today()
 for data in list_data:
-    if data["month"] == today.month and data["day"] == today.day:
+    if (data["month"], data["day"]) == (today.month, today.day):
         send_mail(data["name"], data["email"])
