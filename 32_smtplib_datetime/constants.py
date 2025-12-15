@@ -18,3 +18,6 @@ class Smtp(Enum):
     PORT_2 = getenv("SMTP_PORT_2")
     USER_2 = getenv("SMTP_USER_2")
     PWD_2 = getenv("SMTP_PWD_2")
+
+
+PATH_QUOTES = "quotes.txt"
