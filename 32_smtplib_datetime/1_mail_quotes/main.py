@@ -5,6 +5,8 @@ import smtplib
 
 import constants as cons
 
+# ######################    Func   ######################
+
 
 def fetch_quotes():
     with open(cons.PATH_QUOTES, "r") as f:
@@ -35,11 +37,14 @@ def send_mail_quote(
         )
 
 
-quotes = fetch_quotes()
-weekdayday_send_mail = dt.datetime.now().weekday()
-day_send_mail = calendar.day_name[weekdayday_send_mail]
+# ######################    Run    ######################
 
-if dt.datetime.now().weekday() == weekdayday_send_mail:
+
+quotes = fetch_quotes()
+weekday_send_mail = dt.datetime.now().weekday()
+day_send_mail = calendar.day_name[weekday_send_mail]
+
+if dt.datetime.now().weekday() == weekday_send_mail:
     send_mail_quote(
         quote=quotes,
         receiver=cons.Smtp.USER_2.value,
