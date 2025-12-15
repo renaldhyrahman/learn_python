@@ -13,6 +13,8 @@
 
 
 import datetime as dt
+import os
+import random as r
 
 import constants as cons
 import pandas as pd
@@ -25,8 +27,20 @@ def fetch_data():
     return df_data.to_dict(orient="records")
 
 
+def get_random_letter(name: str):
+    letters_dir = cons.Path.LETTERS_DIR.value
+    files = os.listdir(letters_dir)
+    path_random_letter = f"{letters_dir}/{r.choice(files)}"
+    with open(path_random_letter, "r") as f:
+        letter = f.read()
+        letter = letter.replace("[NAME]", name)
+        return letter
+
+
 def send_mail(name: str, email: str):
     print(f"{name} = {email}")
+    letter = get_random_letter(name)
+    print(letter)
 
 
 # ######################    Run     ######################
