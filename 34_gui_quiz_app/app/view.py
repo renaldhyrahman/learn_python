@@ -1,11 +1,13 @@
 import tkinter as tk
 
 import app.constants as cons
+from app.quiz_brain import QuizBrain
 from PIL import Image, ImageTk
 
 
 class View:
-    def __init__(self):
+    def __init__(self, quiz_brain: QuizBrain):
+        self.quiz = quiz_brain
         self.boot()
 
     def boot(self):
@@ -23,7 +25,7 @@ class View:
 
         # normalize state/trigger observer
         self.state_score.set(0)
-        self.state_question.set("Placeholder")
+        self.get_next_question()
 
     def setup_window(self):
         self.window = tk.Tk()
@@ -56,6 +58,7 @@ class View:
         text_ycor = heigth / 2
         self.canvas_text = self.canvas.create_text(
             (text_xcor, text_ycor),
+            width=(width - cons.Size.PADDING_QUESTION.value),
             font=cons.ConfigView.FONT.value,
             fill=cons.ConfigView.THEME_COLOR.value,
         )
@@ -101,6 +104,10 @@ class View:
     def obs_question(self, *args):
         question = self.state_question.get()
         self.canvas.itemconfig(self.canvas_text, text=question)
+
+    def get_next_question(self):
+        q_text = self.quiz.next_question()
+        self.state_question.set(q_text)
 
     def run(self):
         self.window.mainloop()

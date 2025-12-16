@@ -1,7 +1,6 @@
 from app.data import question_data
 from app.question_model import Question
-
-# from app.quiz_brain import QuizBrain
+from app.quiz_brain import QuizBrain
 from app.view import View
 
 question_bank = []
@@ -13,8 +12,8 @@ for question in question_data:
 
 
 def start():
-    # quiz = QuizBrain(question_bank)
-    quiz_ui = View()
+    quiz = QuizBrain(question_bank)
+    quiz_ui = View(quiz)
     quiz_ui.run()
 
     # while quiz.still_has_questions():
