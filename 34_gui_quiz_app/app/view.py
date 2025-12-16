@@ -76,14 +76,14 @@ class View:
             image=self.img_true,
             border=0,
             highlightthickness=0,
-            command=lambda: print("True"),
+            command=self.on_true,
         )
         self.button_false = tk.Button(
             self.window,
             image=self.img_false,
             border=0,
             highlightthickness=0,
-            command=lambda: print("False"),
+            command=self.on_false,
         )
 
     def build_layout(self):
@@ -108,6 +108,19 @@ class View:
     def get_next_question(self):
         q_text = self.quiz.next_question()
         self.state_question.set(q_text)
+
+    def on_true(self):
+        is_correct = self.quiz.check_answer("True")
+        self.update_score(is_correct)
+
+    def on_false(self):
+        is_correct = self.quiz.check_answer("False")
+        self.update_score(is_correct)
+
+    def update_score(self, is_correct: bool):
+        if is_correct:
+            self.state_score.set(self.state_score.get() + 1)
+        self.get_next_question()
 
     def run(self):
         self.window.mainloop()
