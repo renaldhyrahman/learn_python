@@ -5,8 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_WEATHER = "https://api.openweathermap.org/data/2.5"
-API_KEY_WEATHER = getenv("API_KEY_WEATHER")
+
+class API(Enum):
+    OWM_ENDPOINT = "https://api.openweathermap.org/data/2.5"
+    OWM_KEY = getenv("API_KEY_WEATHER")
 
 
 class Location(Enum):

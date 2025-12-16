@@ -3,14 +3,14 @@ import requests
 
 
 def get_forecast() -> list[dict[str, str]]:
-    api_endpoint = cons.API_WEATHER
+    api_endpoint = cons.API.OWM_ENDPOINT.value
     api_endpoint += "/forecast"
     res = requests.get(
         url=api_endpoint,
         params={
             "lat": cons.Location.LATITUDE.value,
             "lon": cons.Location.LONGITUDE.value,
-            "appid": cons.API_KEY_WEATHER,
+            "appid": cons.API.OWM_KEY.value,
         },
     )
     res.raise_for_status()
