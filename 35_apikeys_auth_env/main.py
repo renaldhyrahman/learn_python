@@ -27,7 +27,9 @@ def get_forecast() -> list[dict[str, str | int]]:
 
 
 forecast = get_forecast()
+will_rain = False
 for weather in forecast:
     if weather["id"] < 700:
-        date, time = weather["dt_txt"].split(" ")
-        print(f"{date} @ {time} :\nBring an umbrella.")
+        will_rain = True
+if will_rain:
+    print("Bring an umbrella.")
