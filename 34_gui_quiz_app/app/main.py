@@ -1,6 +1,8 @@
 from app.data import question_data
 from app.question_model import Question
-from app.quiz_brain import QuizBrain
+
+# from app.quiz_brain import QuizBrain
+from app.view import View
 
 question_bank = []
 for question in question_data:
@@ -11,10 +13,12 @@ for question in question_data:
 
 
 def start():
-    quiz = QuizBrain(question_bank)
+    # quiz = QuizBrain(question_bank)
+    quiz_ui = View()
+    quiz_ui.run()
 
-    while quiz.still_has_questions():
-        quiz.next_question()
+    # while quiz.still_has_questions():
+    #     quiz.next_question()
 
-    print("You've completed the quiz")
-    print(f"Your final score was: {quiz.score}/{quiz.question_number}")
+    # print("You've completed the quiz")
+    # print(f"Your final score was: {quiz.score}/{quiz.question_number}")
