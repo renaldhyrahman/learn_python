@@ -21,5 +21,6 @@ class QuizBrain:
     def check_answer(self, user_answer: bool) -> bool:
         correct_answer = self.current_question.answer
         if user_answer == correct_answer:
+            self.score += 1
             return True
         return False

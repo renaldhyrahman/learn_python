@@ -76,14 +76,18 @@ class View:
             image=self.img_true,
             border=0,
             highlightthickness=0,
-            command=lambda: self.updates(self.quiz.check_answer("True")),
+            command=lambda: self.visual_responds(
+                self.quiz.check_answer("True")
+            ),
         )
         self.button_false = tk.Button(
             self.window,
             image=self.img_false,
             border=0,
             highlightthickness=0,
-            command=lambda: self.updates(self.quiz.check_answer("False")),
+            command=lambda: self.visual_responds(
+                self.quiz.check_answer("False")
+            ),
         )
 
     def build_layout(self):
@@ -108,26 +112,19 @@ class View:
     def get_next_question(self):
         q_text = self.quiz.next_question()
         self.state_question.set(q_text)
+        self.button_true.config(state=tk.NORMAL)
+        self.button_false.config(state=tk.NORMAL)
+        self.canvas.config(bg=cons.ColorPalette.WHITE.value)
 
     def visual_responds(self, is_correct: bool):
         if is_correct:
+            self.state_score.set(self.quiz.score)
             self.canvas.config(bg=cons.ColorPalette.GREEN.value)
         else:
             self.canvas.config(bg=cons.ColorPalette.RED.value)
         self.button_true.config(state=tk.DISABLED)
         self.button_false.config(state=tk.DISABLED)
-        self.window.after(1500, self.visual_reset)
-
-    def visual_reset(self):
-        self.button_true.config(state=tk.NORMAL)
-        self.button_false.config(state=tk.NORMAL)
-        self.canvas.config(bg=cons.ColorPalette.WHITE.value)
-        self.get_next_question()
-
-    def updates(self, is_correct: bool):
-        if is_correct:
-            self.state_score.set(self.state_score.get() + 1)
-        self.visual_responds(is_correct)
+        self.window.after(1500, self.get_next_question)
 
     def run(self):
         self.window.mainloop()
