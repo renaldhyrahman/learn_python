@@ -6,11 +6,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class API(Enum):
-    OWM_ENDPOINT = "https://api.openweathermap.org/data/2.5"
-    OWM_KEY = getenv("API_KEY_WEATHER")
+class OpenWeatherMap(Enum):
+    API = "https://api.openweathermap.org/data/2.5"
+    TOKEN = getenv("API_TOKEN_WEATHER")
+
+
+class Telegram(Enum):
+    BOT_API = "https://api.telegram.org/bot"
+    BOT_TOKEN = getenv("TELEGRAM_BOT_TOKEN")
+    CHAT_ID = getenv("TELEGRAM_CHAT_ID")
 
 
 class Location(Enum):
-    LATITUDE = getenv("LATITUDE")
-    LONGITUDE = getenv("LONGITUDE")
+    LATITUDE = getenv("MY_LATITUDE")
+    LONGITUDE = getenv("MY_LONGITUDE")
