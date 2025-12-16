@@ -11,7 +11,8 @@ class ConfigView(Enum):
 
 
 class Size(Enum):
-    PADDING = 20
+    PADDING_WINDOW = 20
+    PADDING_CANVAS = 50
     CANVAS = (300, 250)
 
 

@@ -30,9 +30,10 @@ class View:
         self.window.title(cons.ConfigView.TITLE.value)
         self.window.configure(
             bg=cons.ConfigView.THEME_COLOR.value,
-            padx=cons.Size.PADDING.value,
-            pady=cons.Size.PADDING.value,
+            padx=cons.Size.PADDING_WINDOW.value,
+            pady=cons.Size.PADDING_WINDOW.value,
         )
+        self.window.resizable(0, 0)
 
     def setup_states(self):
         self.state_score = tk.IntVar()
@@ -56,6 +57,7 @@ class View:
         self.canvas_text = self.canvas.create_text(
             (text_xcor, text_ycor),
             font=cons.ConfigView.FONT.value,
+            fill=cons.ConfigView.THEME_COLOR.value,
         )
 
     def setup_labels(self):
@@ -82,16 +84,15 @@ class View:
         )
 
     def build_layout(self):
-        padding = cons.Size.PADDING.value
-        self.label_scoreboard.grid(column=1, row=0, pady=padding)
+        self.label_scoreboard.grid(column=1, row=0)
         self.canvas.grid(
             column=0,
             row=1,
             columnspan=2,
-            pady=padding,
+            pady=cons.Size.PADDING_CANVAS.value,
         )
-        self.button_true.grid(column=0, row=2, pady=padding)
-        self.button_false.grid(column=1, row=2, pady=padding)
+        self.button_true.grid(column=0, row=2)
+        self.button_false.grid(column=1, row=2)
 
     def obs_score(self, *args):
         score = self.state_score.get()
