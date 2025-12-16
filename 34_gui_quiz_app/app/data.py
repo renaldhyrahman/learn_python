@@ -28,8 +28,8 @@ question_data = [
         "type": "boolean",
         "difficulty": "medium",
         "question": "All program codes have to be compiled into an executable "
-        "file in order to be run. This file can then "
-        "be executed on any machine.",
+        "file in order to be run. This file can then be "
+        "executed on any machine.",
         "correct_answer": "False",
         "incorrect_answers": ["True"],
     },
@@ -79,8 +79,8 @@ question_data = [
         "category": "Science: Computers",
         "type": "boolean",
         "difficulty": "hard",
-        "question": "The IBM PC used an Intel 8008 microprocessor "
-        "clocked at 4.77 MHz and 8 kilobytes of memory.",
+        "question": "The IBM PC used an Intel 8008 microprocessor clocked at "
+        "4.77 MHz and 8 kilobytes of memory.",
         "correct_answer": "False",
         "incorrect_answers": ["True"],
     },
