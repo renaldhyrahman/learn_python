@@ -31,7 +31,7 @@ class View:
         self.window = tk.Tk()
         self.window.title(cons.ConfigView.TITLE.value)
         self.window.configure(
-            bg=cons.ConfigView.THEME_COLOR.value,
+            bg=cons.ColorPalette.THEME.value,
             padx=cons.Size.PADDING_WINDOW.value,
             pady=cons.Size.PADDING_WINDOW.value,
         )
@@ -60,14 +60,14 @@ class View:
             (text_xcor, text_ycor),
             width=(width - cons.Size.PADDING_QUESTION.value),
             font=cons.ConfigView.FONT.value,
-            fill=cons.ConfigView.THEME_COLOR.value,
+            fill=cons.ColorPalette.THEME.value,
         )
 
     def setup_labels(self):
         self.label_scoreboard = tk.Label(
             self.window,
-            bg=cons.ConfigView.THEME_COLOR.value,
-            fg=cons.ConfigView.FG_COLOR_SCORE.value,
+            bg=cons.ColorPalette.THEME.value,
+            fg=cons.ColorPalette.WHITE.value,
         )
 
     def setup_buttons(self):
@@ -76,14 +76,14 @@ class View:
             image=self.img_true,
             border=0,
             highlightthickness=0,
-            command=self.on_true,
+            command=lambda: self.updates(self.quiz.check_answer("True")),
         )
         self.button_false = tk.Button(
             self.window,
             image=self.img_false,
             border=0,
             highlightthickness=0,
-            command=self.on_false,
+            command=lambda: self.updates(self.quiz.check_answer("False")),
         )
 
     def build_layout(self):
@@ -109,18 +109,25 @@ class View:
         q_text = self.quiz.next_question()
         self.state_question.set(q_text)
 
-    def on_true(self):
-        is_correct = self.quiz.check_answer("True")
-        self.update_score(is_correct)
+    def visual_responds(self, is_correct: bool):
+        if is_correct:
+            self.canvas.config(bg=cons.ColorPalette.GREEN.value)
+        else:
+            self.canvas.config(bg=cons.ColorPalette.RED.value)
+        self.button_true.config(state=tk.DISABLED)
+        self.button_false.config(state=tk.DISABLED)
+        self.window.after(1500, self.visual_reset)
 
-    def on_false(self):
-        is_correct = self.quiz.check_answer("False")
-        self.update_score(is_correct)
+    def visual_reset(self):
+        self.button_true.config(state=tk.NORMAL)
+        self.button_false.config(state=tk.NORMAL)
+        self.canvas.config(bg=cons.ColorPalette.WHITE.value)
+        self.get_next_question()
 
-    def update_score(self, is_correct: bool):
+    def updates(self, is_correct: bool):
         if is_correct:
             self.state_score.set(self.state_score.get() + 1)
-        self.get_next_question()
+        self.visual_responds(is_correct)
 
     def run(self):
         self.window.mainloop()

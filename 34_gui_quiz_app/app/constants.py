@@ -5,9 +5,14 @@ API_QUESTION = "https://opentdb.com/api.php"
 
 class ConfigView(Enum):
     TITLE = "Quizzler"
-    THEME_COLOR = "#375362"
     FONT = ("Arial", 20, "italic")
-    FG_COLOR_SCORE = "#FFF"
+
+
+class ColorPalette(Enum):
+    THEME = "#375362"
+    WHITE = "#FFFFFF"
+    GREEN = "#51cf66"
+    RED = "#FF6B6B"
 
 
 class Size(Enum):
