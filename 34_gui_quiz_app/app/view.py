@@ -110,11 +110,13 @@ class View:
         self.canvas.itemconfig(self.canvas_text, text=question)
 
     def get_next_question(self):
+        self.canvas.config(bg=cons.ColorPalette.WHITE.value)
+        if not self.quiz.still_has_questions():
+            return self.game_over()
         q_text = self.quiz.next_question()
         self.state_question.set(q_text)
         self.button_true.config(state=tk.NORMAL)
         self.button_false.config(state=tk.NORMAL)
-        self.canvas.config(bg=cons.ColorPalette.WHITE.value)
 
     def visual_responds(self, is_correct: bool):
         if is_correct:
@@ -122,9 +124,16 @@ class View:
             self.canvas.config(bg=cons.ColorPalette.GREEN.value)
         else:
             self.canvas.config(bg=cons.ColorPalette.RED.value)
+        self.disabled_buttons()
+        self.window.after(1500, self.get_next_question)
+
+    def disabled_buttons(self):
         self.button_true.config(state=tk.DISABLED)
         self.button_false.config(state=tk.DISABLED)
-        self.window.after(1500, self.get_next_question)
+
+    def game_over(self):
+        self.disabled_buttons()
+        self.canvas.itemconfig(self.canvas_text, text="Game Over")
 
     def run(self):
         self.window.mainloop()
