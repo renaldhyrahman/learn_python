@@ -4,14 +4,23 @@ import requests as req
 
 # STEP 1
 def get_delta_percentage(stock: str) -> float:
-    url = const.API.ALPHAVANTAGE_API.value
-    url += "/query"
+    """
+    Fetch daily stock prices and compute the percentage change
+    between the two most recent trading days.
+
+    Args:
+        stock: Stock ticker symbol (e.g. "TSLA").
+
+    Returns the percentage change from the previous trading day
+    (positive for increase, negative for decrease).
+    """
+    endpoint = "/query"
     res = req.get(
-        url=url,
+        url=const.ALPHAVANTAGE_API + endpoint,
         params={
             "function": "TIME_SERIES_DAILY",
             "symbol": stock,
-            "apikey": const.API.ALPHAVANTAGE_TOKEN.value,
+            "apikey": const.ALPHAVANTAGE_TOKEN,
         },
     )
     res.raise_for_status()
@@ -25,13 +34,22 @@ def get_delta_percentage(stock: str) -> float:
 
 # STEP 2
 def get_news(query: str) -> list[dict[str, str]]:
-    url = const.API.NEWSAPI_API.value
-    url += "/everything"
+    """
+    Fetch the latest news articles matching a search query.
+
+    Args:
+        query (str): Search keyword or company name.
+
+    Returns:
+        list: A list of up to 3 news articles (dict),
+              each containing 'title', 'description', and 'url'.
+    """
+    endpoint = "/everything"
     res = req.get(
-        url=url,
+        url=const.NEWSAPI_API + endpoint,
         params={
             "q": query,
-            "apiKey": const.API.NEWSAPI_TOKEN.value,
+            "apiKey": const.NEWSAPI_TOKEN,
         },
     )
     res.raise_for_status()
@@ -48,13 +66,18 @@ def get_news(query: str) -> list[dict[str, str]]:
 
 # STEP 3
 def send_telegram(message: str) -> None:
-    url = const.Telegram.BOT_API.value
-    url += const.Telegram.BOT_TOKEN.value
-    url += "/sendMessage"
+    """
+    Send a text message to a Telegram chat using a bot.
+
+    Args:
+        message: Message that will be sent.
+    """
+    url = const.TELEGRAM_BOT_API + const.TELEGRAM_BOT_TOKEN
+    endpoint = "/sendMessage"
     res = req.post(
-        url=url,
+        url=url + endpoint,
         json={
-            "chat_id": const.Telegram.CHAT_ID.value,
+            "chat_id": const.TELEGRAM_CHAT_ID,
             "text": message,
         },
     )
@@ -62,51 +85,58 @@ def send_telegram(message: str) -> None:
 
 
 # Optional:
-"""
-TSLA: 🔺2%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?.
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds
-and prominent investors are required to file by the SEC The 13F filings show
-the funds' and investors' portfolio positions as of March 31st,
-near the height of the coronavirus market crash.
-or
-"TSLA: 🔻5%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?.
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds
-and prominent investors are required to file by the SEC The 13F filings show
-the funds' and investors' portfolio positions as of March 31st,
-near the height of the coronavirus market crash.
-"""
-
-
 def message_formatter(
     stock: str,
     delta: float,
     news: dict[str, str],
 ) -> str:
+    """
+    Format a stock alert message including price movement and news.
+
+    Args:
+        stock: Stock ticker symbol.
+        delta: Percentage price change.
+        news: News article with keys
+              'title', 'description', and 'url'.
+
+    Returns a formatted message ready to be sent.
+    """
     msg = f"{stock}: "
     if delta > 0:
         msg += "🔺"
     else:
         msg += "🔻"
-    msg += f"{round(delta * 100, 2)}%\n\n"
+    msg += f"{round(abs(delta) * 100, 2)}%\n\n"
     msg += f"Headline: {news['title']}\n\n"
     msg += f"Brief: {news['description']}\n\n"
-    msg += f"Source: {news['url']}"
+    msg += f"Source: {news['url']}\n\n"
     return msg
 
 
 # ######################    APP   ######################
 
 
-def app() -> None:
-    stock = const.STOCK
-    delta = get_delta_percentage(stock)
-    if abs(delta) >= 0.05:
+def stock_notifier(equity: str, company: str, threshold: float) -> None:
+    """
+    Monitor a stock and send Telegram alerts with related news
+    when the price change exceeds a given threshold.
+
+    Args:
+        equity: Stock ticker symbol.
+        company: Company name used for news search.
+        threshold: Percentage change required to trigger alerts.
+    """
+    delta = get_delta_percentage(equity)
+    if abs(delta) <= threshold:
+        print(f"{equity}: {round(delta * 100, 2)}%")
         return
-    for news in get_news(const.COMPANY_NAME):
-        message = message_formatter(stock, delta, news)
+    for news in get_news(company):
+        message = message_formatter(equity, delta, news)
         send_telegram(message)
 
 
-app()
+stock_notifier(
+    equity=const.STOCK,
+    company=const.COMPANY_NAME,
+    threshold=0.05,
+)
