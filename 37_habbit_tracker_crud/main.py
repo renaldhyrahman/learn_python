@@ -77,14 +77,14 @@ def create_graph(
     return res.json()
 
 
-def record_graph(
+def record_pixel(
     user: tuple[str, str],
     graph_id: str,
     date: str,
     quatity: int | float,
 ) -> dict[str, str]:
     """
-    Record the `quantity` with today date, to `graph_id` on pixela.
+    Record the `quantity` with today date (pixel), to `graph_id` on pixela.
 
     Raises an HTTPError, if one occurred.
 
@@ -113,14 +113,14 @@ def record_graph(
     return res.json()
 
 
-def update_graph(
+def update_pixel(
     user: tuple[str, str],
     graph_id: str,
     date: str,
     quatity: int | float,
-):
+) -> dict[str, str]:
     """
-    Update the pixela's record of `quantity` in `graph_id` on `date`.
+    Update the pixela's record of `quantity` (pixel) in `graph_id` on `date`.
 
     Raises an HTTPError, if one occurred.
 
@@ -139,9 +139,35 @@ def update_graph(
     res = req.put(
         url=const.PIXELA_API + endpoint,
         headers={"X-USER-TOKEN": usertoken},
-        json={
-            "quantity": f"{quatity}",
-        },
+        json={"quantity": f"{quatity}"},
+    )
+    print(res.text)
+    res.raise_for_status()
+    return res.json()
+
+
+def delete_pixel(
+    user: tuple[str, str],
+    graph_id: str,
+    date: str,
+) -> dict[str, str]:
+    """
+    Delete the pixela's record of `quantity` (pixel) in `graph_id` on `date`.
+
+    Raises an HTTPError, if one occurred.
+
+    Returns a response from api as dict if success.
+
+    Args:
+      user: A tuple consist of `username` and `user token`.
+      graph_id: ID of the pixela's graph.
+      date: Date in format `YYYYMMDD`
+    """
+    username, usertoken = user
+    endpoint = f"/{username}/graphs/{graph_id}/{date}"
+    res = req.delete(
+        url=const.PIXELA_API + endpoint,
+        headers={"X-USER-TOKEN": usertoken},
     )
     print(res.text)
     res.raise_for_status()
@@ -170,16 +196,23 @@ date_yesterday_str = date_yesterday.strftime("%Y%m%d")
 
 date_test = (date.today() - timedelta(days=2)).strftime("%Y%m%d")
 
-# record_graph(
+# record_pixel(
 #     user=user,
 #     graph_id=graph["id"],
 #     date=date_test,
 #     quatity=75,
 # )
 
-update_graph(
+# update_pixel(
+#     user=user,
+#     graph_id=graph["id"],
+#     date=date_test,
+#     quatity=25,
+# )
+
+
+delete_pixel(
     user=user,
     graph_id=graph["id"],
     date=date_test,
-    quatity=25,
 )
