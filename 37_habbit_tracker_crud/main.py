@@ -1,3 +1,5 @@
+import datetime as dt
+
 import constants as const
 import requests as req
 
@@ -13,7 +15,7 @@ def create_user(user: tuple[str, str]) -> dict[str, str]:
     Returns a response from api as dict if success.
 
     Args:
-      user: A tuple consist of `username` and `user token`
+      user: A tuple consist of `username` and `user token`.
     """
     username, usertoken = user
     res = req.post(
@@ -41,7 +43,7 @@ def create_graph(
     Returns a response from api as dict if success.
 
     Args:
-      user: A tuple consist of `username` and `user token`
+      user: A tuple consist of `username` and `user token`.
       graph: A dictionary, expecting key (required):
       `"id"`: ID for identifying graph.
       `"name"`: Name of the graph.
@@ -69,6 +71,41 @@ def create_graph(
             "color": graph["color"],
         },
     )
+    res.raise_for_status()
+    return res.json()
+
+
+def record_graph(
+    user: tuple[str, str],
+    graph_id: str,
+    quatity: int | float,
+) -> dict[str, str]:
+    """
+    Record the `quantity` with today date, to `graph_id` on pixela.
+
+    Raises an HTTPError, if one occurred.
+
+    Returns a response from api as dict if success.
+
+    Args:
+      user: A tuple consist of `username` and `user token`.
+      graph_id: ID of the pixela's graph.
+      quatity: Quantity to be recorded,
+               must match the `type` when the graph is created.
+               If it was `"int"` then it must be an integer,
+               or if it was `"float"` then it must be a float (e.g. 3.14).
+    """
+    username, usertoken = user
+    endpoint = f"/{username}/graphs/{graph_id}"
+    date_stamp = dt.datetime.now().strftime("%Y%m%d")
+    res = req.post(
+        url=const.PIXELA_API + endpoint,
+        headers={"X-USER-TOKEN": usertoken},
+        json={
+            "date": date_stamp,
+            "quantity": f"{quatity}",
+        },
+    )
     print(res.text)
     res.raise_for_status()
 
@@ -85,4 +122,5 @@ graph = {
     "type": "float",
     "color": "ajisai",
 }
-create_graph(user, graph)
+# create_graph(user, graph)
+record_graph(user=user, graph_id=graph["id"], quatity=20.5)
