@@ -25,13 +25,10 @@ def get_delta_percentage(stock: str) -> float:
 
 def is_get_news() -> bool:
     delta = get_delta_percentage(const.STOCK)
-    print(delta)
-    return abs(delta) >= 0.05
+    return abs(delta) <= 0.05
 
 
-# STEP 2: Use https://newsapi.org
-# Instead of printing ("Get News"),
-# actually get the first 3 news pieces for the COMPANY_NAME.
+# STEP 2
 def get_news(query: str):
     url = const.API.NEWSAPI_API.value
     url += "/everything"
@@ -55,7 +52,8 @@ def get_news(query: str):
 
 
 if is_get_news():
-    get_news(const.COMPANY_NAME)
+    news = get_news(const.COMPANY_NAME)
+    print(news)
 
 # STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and
