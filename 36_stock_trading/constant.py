@@ -13,5 +13,5 @@ COMPANY_NAME: Final = "Tesla Inc"
 class API(Enum):
     ALPHAVANTAGE_API = "https://www.alphavantage.co"
     ALPHAVANTAGE_TOKEN = getenv("ALPHAVANTAGE_TOKEN")
-    NEWSAPI_API = "ttps://newsapi.org/v2"
+    NEWSAPI_API = "https://newsapi.org/v2"
     NEWSAPI_TOKEN = getenv("NEWSAPI_TOKEN")
