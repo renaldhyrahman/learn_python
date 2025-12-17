@@ -1,9 +1,44 @@
-STOCK = "TSLA"
-COMPANY_NAME = "Tesla Inc"
+import datetime as dt
+
+import constant as const
+import requests as req
+
+
+def get_past_date(delta: int) -> dt.date:
+    return dt.date.today() - dt.timedelta(days=delta)
+
 
 # STEP 1: Use https://www.alphavantage.co
 # When STOCK price increase/decreases by 5% between yesterday and
 # the day before yesterday then print("Get News").
+def get_delta_percentage(stock: str) -> float:
+    url = const.API.ALPHAVANTAGE_API.value
+    url += "/query"
+    res = req.get(
+        url=url,
+        params={
+            "function": "TIME_SERIES_DAILY",
+            "symbol": stock,
+            "apikey": const.API.ALPHAVANTAGE_TOKEN.value,
+        },
+    )
+    res.raise_for_status()
+    data = res.json()["Time Series (Daily)"]
+    dates = sorted(data.keys(), reverse=True)
+    yesterday = float(data[dates[0]]["4. close"])
+    before_yesterday = float(data[dates[1]]["4. close"])
+    return (yesterday - before_yesterday) / before_yesterday
+
+
+def is_get_news():
+    delta = get_delta_percentage(const.STOCK)
+    print(delta)
+    return abs(delta) >= 0.05
+
+
+if is_get_news():
+    print("Get News")
+
 
 # STEP 2: Use https://newsapi.org
 # Instead of printing ("Get News"),

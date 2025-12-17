@@ -1,0 +1,17 @@
+from enum import Enum
+from os import getenv
+from typing import Final
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+STOCK: Final = "TSLA"
+COMPANY_NAME: Final = "Tesla Inc"
+
+
+class API(Enum):
+    ALPHAVANTAGE_API = "https://www.alphavantage.co"
+    ALPHAVANTAGE_TOKEN = getenv("ALPHAVANTAGE_TOKEN")
+    NEWSAPI_API = "ttps://newsapi.org/v2"
+    NEWSAPI_TOKEN = getenv("NEWSAPI_TOKEN")
