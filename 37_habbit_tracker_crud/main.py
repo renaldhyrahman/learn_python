@@ -1,4 +1,4 @@
-import datetime as dt
+from datetime import date, timedelta
 
 import constants as const
 import requests as req
@@ -27,6 +27,7 @@ def create_user(user: tuple[str, str]) -> dict[str, str]:
             "notMinor": "yes",
         },
     )
+    print(res.text)
     res.raise_for_status()
     return res.json()
 
@@ -71,6 +72,7 @@ def create_graph(
             "color": graph["color"],
         },
     )
+    print(res.text)
     res.raise_for_status()
     return res.json()
 
@@ -78,6 +80,7 @@ def create_graph(
 def record_graph(
     user: tuple[str, str],
     graph_id: str,
+    date: str,
     quatity: int | float,
 ) -> dict[str, str]:
     """
@@ -90,24 +93,24 @@ def record_graph(
     Args:
       user: A tuple consist of `username` and `user token`.
       graph_id: ID of the pixela's graph.
+      date: Date in format `YYYYMMDD`
       quatity: Quantity to be recorded,
                must match the `type` when the graph is created.
-               If it was `"int"` then it must be an integer,
-               or if it was `"float"` then it must be a float (e.g. 3.14).
+               If it was `"int"` then it can't be float.
     """
     username, usertoken = user
     endpoint = f"/{username}/graphs/{graph_id}"
-    date_stamp = dt.datetime.now().strftime("%Y%m%d")
     res = req.post(
         url=const.PIXELA_API + endpoint,
         headers={"X-USER-TOKEN": usertoken},
         json={
-            "date": date_stamp,
+            "date": date,
             "quantity": f"{quatity}",
         },
     )
     print(res.text)
     res.raise_for_status()
+    return res.json()
 
 
 # ######################    APP   ######################
@@ -123,4 +126,18 @@ graph = {
     "color": "ajisai",
 }
 # create_graph(user, graph)
-record_graph(user=user, graph_id=graph["id"], quatity=20.5)
+
+date_today = date.today()
+date_today_str = date_today.strftime("%Y%m%d")
+
+date_yesterday = date.today() - timedelta(days=1)
+date_yesterday_str = date_yesterday.strftime("%Y%m%d")
+
+date_test = (date.today() - timedelta(days=2)).strftime("%Y%m%d")
+
+record_graph(
+    user=user,
+    graph_id=graph["id"],
+    date=date_test,
+    quatity=75,
+)
