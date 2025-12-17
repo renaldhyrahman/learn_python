@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from typing import Any
 
 import constants as const
 import requests as req
@@ -6,16 +7,18 @@ import requests as req
 # ######################   Func   ######################
 
 
-def create_user(user: tuple[str, str]) -> dict[str, str]:
+def create_user(user: tuple[str, str]) -> dict[str, Any]:
     """
     Create pixela user account.
 
-    Raises an HTTPError, if one occurred.
-
-    Returns a response from api as dict if success.
+    Returns `json` response from the Pixela API.
 
     Args:
-      user: A tuple consist of `username` and `user token`.
+      user: Tuple of (username, user token).
+
+    Raises:
+      requests.exceptions.HTTPError: If the API returns
+                                     an unsuccessful status code.
     """
     username, usertoken = user
     res = req.post(
@@ -35,16 +38,14 @@ def create_user(user: tuple[str, str]) -> dict[str, str]:
 def create_graph(
     user: tuple[str, str],
     graph: dict[str, str],
-) -> dict[str, str]:
+) -> dict[str, Any]:
     """
     Use `graph` to create and define pixela graph.
 
-    Raises an HTTPError, if one occurred.
-
-    Returns a response from api as dict if success.
+    Returns `json` response from the Pixela API.
 
     Args:
-      user: A tuple consist of `username` and `user token`.
+      user: Tuple of (username, user token).
       graph: A dictionary, expecting key (required):
       `"id"`: ID for identifying graph.
       `"name"`: Name of the graph.
@@ -57,6 +58,10 @@ def create_graph(
         - "ichou" (yellow)
         - "ajisai" (purple)
         - "kuro" (black)
+
+    Raises:
+      requests.exceptions.HTTPError: If the API returns
+                                     an unsuccessful status code.
     """
     username, usertoken = user
     endpoint = f"/{username}/graphs"
@@ -81,22 +86,24 @@ def record_pixel(
     user: tuple[str, str],
     graph_id: str,
     date: str,
-    quatity: int | float,
-) -> dict[str, str]:
+    quantity: int | float,
+) -> dict[str, Any]:
     """
-    Record the `quantity` with today date (pixel), to `graph_id` on pixela.
+    Record the `quantity` (pixel) on `date` to `graph_id` on Pixela.
 
-    Raises an HTTPError, if one occurred.
-
-    Returns a response from api as dict if success.
+    Returns `json` response from the Pixela API.
 
     Args:
-      user: A tuple consist of `username` and `user token`.
+      user: Tuple of (username, user token).
       graph_id: ID of the pixela's graph.
       date: Date in format `YYYYMMDD`
-      quatity: Quantity to be recorded,
+      quantity: Quantity to be recorded,
                must match the `type` when the graph is created.
                If it was `"int"` then it can't be float.
+
+    Raises:
+      requests.exceptions.HTTPError: If the API returns
+                                     an unsuccessful status code.
     """
     username, usertoken = user
     endpoint = f"/{username}/graphs/{graph_id}"
@@ -105,7 +112,7 @@ def record_pixel(
         headers={"X-USER-TOKEN": usertoken},
         json={
             "date": date,
-            "quantity": f"{quatity}",
+            "quantity": f"{quantity}",
         },
     )
     print(res.text)
@@ -117,29 +124,31 @@ def update_pixel(
     user: tuple[str, str],
     graph_id: str,
     date: str,
-    quatity: int | float,
-) -> dict[str, str]:
+    quantity: int | float,
+) -> dict[str, Any]:
     """
     Update the pixela's record of `quantity` (pixel) in `graph_id` on `date`.
 
-    Raises an HTTPError, if one occurred.
-
-    Returns a response from api as dict if success.
+    Returns `json` response from the Pixela API.
 
     Args:
-      user: A tuple consist of `username` and `user token`.
+      user: Tuple of (username, user token).
       graph_id: ID of the pixela's graph.
       date: Date in format `YYYYMMDD`
-      quatity: Quantity to be updated,
+      quantity: Quantity to be updated,
                must match the `type` when the graph is created.
                If it was `"int"` then it can't be float.
+
+    Raises:
+      requests.exceptions.HTTPError: If the API returns
+                                     an unsuccessful status code.
     """
     username, usertoken = user
     endpoint = f"/{username}/graphs/{graph_id}/{date}"
     res = req.put(
         url=const.PIXELA_API + endpoint,
         headers={"X-USER-TOKEN": usertoken},
-        json={"quantity": f"{quatity}"},
+        json={"quantity": f"{quantity}"},
     )
     print(res.text)
     res.raise_for_status()
@@ -150,18 +159,20 @@ def delete_pixel(
     user: tuple[str, str],
     graph_id: str,
     date: str,
-) -> dict[str, str]:
+) -> dict[str, Any]:
     """
     Delete the pixela's record of `quantity` (pixel) in `graph_id` on `date`.
 
-    Raises an HTTPError, if one occurred.
-
-    Returns a response from api as dict if success.
+    Returns `json` response from the Pixela API.
 
     Args:
-      user: A tuple consist of `username` and `user token`.
+      user: Tuple of (username, user token).
       graph_id: ID of the pixela's graph.
       date: Date in format `YYYYMMDD`
+
+    Raises:
+      requests.exceptions.HTTPError: If the API returns
+                                     an unsuccessful status code.
     """
     username, usertoken = user
     endpoint = f"/{username}/graphs/{graph_id}/{date}"
@@ -178,7 +189,7 @@ def delete_pixel(
 
 
 user = (const.USER_USERNAME, const.USER_TOKEN)
-# create_user(user)
+create_user(user)
 graph = {
     "id": "graph1",
     "name": "cycling",
@@ -200,14 +211,14 @@ date_test = (date.today() - timedelta(days=2)).strftime("%Y%m%d")
 #     user=user,
 #     graph_id=graph["id"],
 #     date=date_test,
-#     quatity=75,
+#     quantity=75,
 # )
 
 # update_pixel(
 #     user=user,
 #     graph_id=graph["id"],
 #     date=date_test,
-#     quatity=25,
+#     quantity=25,
 # )
 
 
