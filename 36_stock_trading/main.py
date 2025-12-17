@@ -24,7 +24,7 @@ def get_delta_percentage(stock: str) -> float:
 
 
 # STEP 2
-def get_news(query: str):
+def get_news(query: str) -> list[dict[str, str]]:
     url = const.API.NEWSAPI_API.value
     url += "/everything"
     res = req.get(
@@ -47,7 +47,7 @@ def get_news(query: str):
 
 
 # STEP 3
-def send_telegram(message: str):
+def send_telegram(message: str) -> None:
     url = const.Telegram.BOT_API.value
     url += const.Telegram.BOT_TOKEN.value
     url += "/sendMessage"
@@ -61,7 +61,7 @@ def send_telegram(message: str):
     res.raise_for_status()
 
 
-# Optional: Format the SMS message like this:
+# Optional:
 """
 TSLA: 🔺2%
 Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?.
@@ -79,18 +79,34 @@ near the height of the coronavirus market crash.
 """
 
 
-def message_formatter(delta_stock: float, news: list[str, str]):
-    pass
+def message_formatter(
+    stock: str,
+    delta: float,
+    news: dict[str, str],
+) -> str:
+    msg = f"{stock}: "
+    if delta > 0:
+        msg += "🔺"
+    else:
+        msg += "🔻"
+    msg += f"{round(delta * 100, 2)}%\n\n"
+    msg += f"Headline: {news['title']}\n\n"
+    msg += f"Brief: {news['description']}\n\n"
+    msg += f"Source: {news['url']}"
+    return msg
 
 
-def app():
-    delta = get_delta_percentage(const.STOCK)
-    is_get_news = abs(delta) <= 0.05
-    if not is_get_news:
+# ######################    APP   ######################
+
+
+def app() -> None:
+    stock = const.STOCK
+    delta = get_delta_percentage(stock)
+    if abs(delta) >= 0.05:
         return
-    news = get_news(const.COMPANY_NAME)
-    message = "\n".join([article["title"] for article in news])
-    send_telegram(message)
+    for news in get_news(const.COMPANY_NAME):
+        message = message_formatter(stock, delta, news)
+        send_telegram(message)
 
 
 app()
