@@ -113,6 +113,41 @@ def record_graph(
     return res.json()
 
 
+def update_graph(
+    user: tuple[str, str],
+    graph_id: str,
+    date: str,
+    quatity: int | float,
+):
+    """
+    Update the pixela's record of `quantity` in `graph_id` on `date`.
+
+    Raises an HTTPError, if one occurred.
+
+    Returns a response from api as dict if success.
+
+    Args:
+      user: A tuple consist of `username` and `user token`.
+      graph_id: ID of the pixela's graph.
+      date: Date in format `YYYYMMDD`
+      quatity: Quantity to be updated,
+               must match the `type` when the graph is created.
+               If it was `"int"` then it can't be float.
+    """
+    username, usertoken = user
+    endpoint = f"/{username}/graphs/{graph_id}/{date}"
+    res = req.put(
+        url=const.PIXELA_API + endpoint,
+        headers={"X-USER-TOKEN": usertoken},
+        json={
+            "quantity": f"{quatity}",
+        },
+    )
+    print(res.text)
+    res.raise_for_status()
+    return res.json()
+
+
 # ######################    APP   ######################
 
 
@@ -135,9 +170,16 @@ date_yesterday_str = date_yesterday.strftime("%Y%m%d")
 
 date_test = (date.today() - timedelta(days=2)).strftime("%Y%m%d")
 
-record_graph(
+# record_graph(
+#     user=user,
+#     graph_id=graph["id"],
+#     date=date_test,
+#     quatity=75,
+# )
+
+update_graph(
     user=user,
     graph_id=graph["id"],
     date=date_test,
-    quatity=75,
+    quatity=25,
 )
